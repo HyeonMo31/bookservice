@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<head xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header">
+    <meta charset="UTF-8">
+    <title>BookService</title>
+    <link rel="stylesheet" href="/../css/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/../css/books.css"/>
+    <link rel="stylesheet" href="/../css/discussionList.css"/>
+    <link rel="stylesheet" href="/../css/discussionAddForm.css"/>
+    <link rel="stylesheet" href="/../css/discussionPost.css"/>
+    <link rel="stylesheet" href="/../css/comment.css"/>
+    <link rel="stylesheet" href="/../css/profile.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+    <style>
+            .heightCal {
+                min-height: calc(100vh - 5rem);
+            }
+            footer {
+                height: 5rem;
+            }
+            .margin-top-100 {
+                margin-top: 100px;
+            }
+            .field-error {
+             border-color: #dc3545;
+             color: #dc3545;
+             }
+
+    <!-- book.html description 글자수 제한 -webkit-inline-box로하니까 되네 -webkit-box이게 아니라-->
+
+            .line {
+                    display: -webkit-inline-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+            }
+<!--            book review css-->
+            .comment-wrapper .panel-body {
+                max-height:650px;
+                overflow:auto;
+            }
+
+            .comment-wrapper .media-list .media img {
+                width:64px;
+                height:64px;
+                border:2px solid #e5e7e8;
+            }
+
+            .comment-wrapper .media-list .media {
+                border-bottom:1px dashed #efefef;
+                margin-bottom:25px;
+            }
+
+
+
+
+
+    </style>
+</head>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"> </head>
+<body>
+<div class="container heightCal">
+    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+    <div class="pricing-header p-3 pb-md-4 mx-auto text-center mt-5">
+        <h1 class="display-4 fw-normal text-body-emphasis">
+            항목 별 최고의 책
+        </h1>
+        <p class="fs-5 text-body-secondary">
+            항목 별 최고의 책을 함께 둘러보세요.
+        </p>
+    </div>
+    <div class="row row-cols-1 row-cols-md-3 mb-3 text-center px-5">
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm">
+                <div class="card-header py-3">
+                    <h4 class="my-0 fw-normal">리뷰 많은 순</h4>
+                </div>
+                <div class="card-body">
+                    <!--                    <h1 class="card-title pricing-card-title">책이름</h1>-->
+                    <img src="img/1.png" width="150px" height="180px" />
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>책이름</li>
+                        <li>저자</li>
+                        <li>평점</li>
+                    </ul>
+                    <button
+                            type="button"
+                            class="w-100 btn btn-lg btn-outline-primary"
+                    >
+                        둘러보기
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm">
+                <div class="card-header py-3">
+                    <h4 class="my-0 fw-normal">토론 언급 1등</h4>
+                </div>
+                <div class="card-body">
+                    <!--                    <h1 class="card-title pricing-card-title">책이름</h1>-->
+                    <img src="img/2.png" width="150px" height="180px" />
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>책이름</li>
+                        <li>저자</li>
+                        <li>평점</li>
+                    </ul>
+                    <button
+                            type="button"
+                            class="w-100 btn btn-lg btn-outline-primary"
+                    >
+                        둘러보기
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm">
+                <div class="card-header py-3">
+                    <h4 class="my-0 fw-normal">즐겨찾기 1등</h4>
+                </div>
+                <div class="card-body">
+                    <!--                    <h1 class="card-title pricing-card-title">책이름</h1>-->
+                    <img src="img/3.png" width="150px" height="180px" />
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>책이름</li>
+                        <li>저자</li>
+                        <li>평점</li>
+                    </ul>
+                    <button
+                            type="button"
+                            class="w-100 btn btn-lg btn-outline-primary"
+                    >
+                        둘러보기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
