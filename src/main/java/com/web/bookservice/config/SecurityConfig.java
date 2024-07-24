@@ -19,12 +19,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-
         http
                 .authorizeHttpRequests((auth) -> auth
                         //누구나 접근
-                        .requestMatchers("/", "/login", "/css/**", "/img/**", "/join",
-                                "/loginProc", "/joinProc").permitAll()
+                        .requestMatchers("/", "/login", "/css/**", "/img/**", "/join", "/error").permitAll()
                         //로그인한 사용자 누구나 접근
                         .requestMatchers("/page").authenticated()
                         //역할에 따라 접근 (로그인 필요)
@@ -39,7 +37,9 @@ public class SecurityConfig {
         http
                 .formLogin((auth) -> auth.loginPage("/login")
                         //로그인한 데이터를 특정 경로로 보낸다 그 경로가 loginProc이다.
-                        .loginProcessingUrl("/loginProc")
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("loginId")
+                        .defaultSuccessUrl("/", true)
                         .permitAll()
                 );
 

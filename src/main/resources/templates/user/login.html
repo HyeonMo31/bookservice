@@ -14,16 +14,18 @@
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <div class="container d-flex justify-content-center margin-top-100">
         <div class="col-md-2 col-lg-3">
-            <form th:action="@{/loginProc}"  method="post">
+            <form th:action="@{/login}"  method="post">
                 <img class="mb-4" src="img/hani.jpg"  width="72" height="57">
                 <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-
+                <div th:if="${loginError != null}">
+                    <p class="field-error" th:text="${loginError}"></p>
+                </div>
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="id" placeholder="">
+                    <input type="text" class="form-control" id="id" name="loginId" placeholder="">
                     <label for="id">아이디</label>
                 </div>
                 <div class="form-floating">
-                    <input type="password" class="form-control" id="password" placeholder="" >
+                    <input type="password" class="form-control" id="password" name="password" placeholder="" >
                     <label for="password">비밀번호</label>
                 </div>
 
