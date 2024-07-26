@@ -1,0 +1,227 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <html lang="en">
+    <head th:replace="fragments/header :: header"> </head>
+    <body>
+      <div class="container heightCal">
+        <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+        <section class="section">
+          <div class="container">
+            <div class="justify-content-center row">
+              <div class="col-lg-12">
+                <div class="candidate-list-widgets mb-4">
+                  <form action="#" class="">
+                    <div class="g-2 row">
+                      <form th:action="@{/search/books}" , method="get">
+                        <div class="col-lg-3">
+                          <div class="filler-job-form">
+                            <i class="uil uil-briefcase-alt"></i
+                            ><input
+                              type="search"
+                              name="query"
+                              class="form-control filler-job-input-box form-control"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-lg-3">
+                          <div>
+                            <button class="btn btn-success ms-2" type="submit">
+                              <i class="uil uil-cog"></i> 검색
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="align-items-center row">
+                  <div class="col-lg-10">
+                    <div class="mb-3 mb-lg-0">
+                      <h6 id="showing" class="fs-16 mb-0">
+                        Showing 1 – 8 of 11 results
+                      </h6>
+                    </div>
+                  </div>
+                  <div class="col-lg-2">
+                    <div class="candidate-list-widgets">
+                      <div class="selection-widget">
+                        <select
+                          class="form-select"
+                          data-trigger="true"
+                          name="orderby"
+                          id="orderby"
+                          aria-label="Default select example"
+                        >
+                          <option value="df">Default</option>
+                          <option value="ne">Newest</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <table>
+                  <div id="book-container" class="candidate-list"></div>
+                </table>
+              </div>
+            </div>
+            <div class="row">
+              <div class="mt-4 pt-2 col-lg-12">
+                <nav aria-label="Page navigation example">
+                  <div
+                    id="pagination"
+                    class="pagination job-pagination mb-0 justify-content-center"
+                  ></div>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div th:replace="fragments/footer :: footer"></div>
+    </body>
+    <script
+      src="https://kit.fontawesome.com/5f234ab63e.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const itemsPerPage = 10;
+      const params = new URLSearchParams(window.location.search);
+      const query = params.get("query") || "";
+      let orderby = params.get("sort") || "df";
+      let currentPage = parseInt(params.get("page")) || 1;
+      let totalPages = 0;
+      let totalItems = 0;
+
+      document.getElementById("orderby").value = orderby;
+
+      document
+        .getElementById("orderby")
+        .addEventListener("change", function () {
+          orderby = this.value;
+          currentPage = 1; // Reset to first page on sort change
+          fetchBooks(currentPage);
+        });
+
+      function fetchBooks(page = 1) {
+        let apiUrl = `/api/books?query=${query}&page=${page}`;
+        if (orderby === "ne") {
+          apiUrl += "&sort=date";
+        }
+
+        fetch(apiUrl)
+          .then((response) => response.json())
+          .then((data) => {
+            totalItems = data.total;
+            totalPages = Math.ceil(data.total / itemsPerPage);
+            displayBooks(data.items);
+            updatePagination(page);
+            updateShowing(page, totalItems);
+          })
+          .catch((error) => {
+            console.error("Error fetching books:", error);
+            const container = document.getElementById("book-container");
+            container.innerHTML = `<h1 class="mt-5 text-center">오류가 발생했습니다.</h1>`;
+          });
+      }
+
+      function displayBooks(books) {
+        const container = document.getElementById("book-container");
+        container.innerHTML = "";
+        if (books.length === 0) {
+          container.innerHTML = `<h1 class="mt-5 text-center">결과 값이 존재하지 않습니다.</h1>`;
+          return;
+        }
+        books.forEach((BookItemDto) => {
+          const bookElement = document.createElement("div");
+          const description =
+            BookItemDto.description.length > 200
+              ? BookItemDto.description.slice(0, 200) + "..."
+              : BookItemDto.description;
+
+          bookElement.className = "candidate-list-box card mt-4";
+          bookElement.innerHTML = `
+                    <div class="p-4 card-body">
+                        <div class="align-items-center row">
+                            <div class="col-auto">
+                                <div class="candidate-list-images">
+                                    <a href="#"><img src="${BookItemDto.image}" alt="" class="avatar-md img-thumbnail" /></a>
+                                </div>
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="candidate-list-content mt-3 mt-lg-0">
+                                    <h5 class="fs-19 mb-0">
+                                        <a class="primary-link" href="/search/book/${BookItemDto.isbn}">${BookItemDto.title}</a>
+                                        <span class="badge bg-success ms-1">${BookItemDto.price} ₩</span>
+                                    </h5>
+                                    <p class="text-muted mb-2">${BookItemDto.author}</p>
+                                    <ul class="list-inline mb-0 text-muted">
+                                        <li class="list-inline-item">ISBN : ${BookItemDto.isbn}</li>
+                                        <li class="list-inline-item">출판사 : ${BookItemDto.publisher}</li>
+                                        <li class="list-inline-item">출간일 : ${BookItemDto.pubdate}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-lg-5">
+                                <p class="max-line">${description}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          container.appendChild(bookElement);
+        });
+      }
+
+      function updatePagination(current) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+        const startPage = Math.max(1, Math.floor((current - 1) / 10) * 10 + 1);
+        const endPage = Math.min(totalPages, startPage + 9);
+
+        if (startPage > 1) {
+          pagination.innerHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="?query=${query}&page=${
+            startPage - 10
+          }&sort=${orderby}">
+                            <i class="bi bi-chevron-double-left fs-15"></i>
+                        </a>
+                    </li>
+                `;
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+          pagination.innerHTML += `
+                    <li class="page-item ${i === current ? "active" : ""}">
+                        <a class="page-link" href="?query=${query}&page=${i}&sort=${orderby}">${i}</a>
+                    </li>
+                `;
+        }
+
+        if (endPage < totalPages) {
+          pagination.innerHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="?query=${query}&page=${
+            endPage + 1
+          }&sort=${orderby}">
+                            <i class="bi bi-chevron-double-right fs-15"></i>
+                        </a>
+                    </li>
+                `;
+        }
+      }
+
+      function updateShowing(page, totalItems) {
+        const showingElement = document.getElementById("showing");
+        const start = (page - 1) * itemsPerPage + 1;
+        const end = Math.min(page * itemsPerPage, totalItems);
+        showingElement.textContent = `Showing ${start} – ${end} of ${totalItems} results`;
+      }
+
+      fetchBooks(currentPage);
+    </script>
+  </html>
+</html>

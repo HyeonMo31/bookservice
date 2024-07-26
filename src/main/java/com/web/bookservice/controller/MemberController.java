@@ -1,7 +1,6 @@
 package com.web.bookservice.controller;
 
-import com.web.bookservice.domain.Member;
-import com.web.bookservice.dto.JoinDTO;
+import com.web.bookservice.dto.JoinDto;
 import com.web.bookservice.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,12 +30,12 @@ public class MemberController {
     }
 
     @GetMapping("/join")
-    public String joinPage(@ModelAttribute JoinDTO joinDTO) {
+    public String joinPage(@ModelAttribute JoinDto joinDTO) {
         return "user/join";
     }
 
     @PostMapping("/join")
-    public String join(@Validated  @ModelAttribute JoinDTO joinDTO, BindingResult result
+    public String join(@Validated  @ModelAttribute JoinDto joinDTO, BindingResult result
     , RedirectAttributes redirectAttributes) {
 
         if(result.hasErrors()) {

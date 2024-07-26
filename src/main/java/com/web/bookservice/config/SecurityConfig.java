@@ -22,7 +22,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         //누구나 접근
-                        .requestMatchers("/", "/login", "/css/**", "/img/**", "/join", "/error").permitAll()
+                        .requestMatchers("/", "/login", "/css/**", "/img/**", "/join", "/error",
+                                "/search", "/search/**", "/api/**").permitAll()
                         //로그인한 사용자 누구나 접근
                         .requestMatchers("/page").authenticated()
                         //역할에 따라 접근 (로그인 필요)

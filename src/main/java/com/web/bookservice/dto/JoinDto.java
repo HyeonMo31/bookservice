@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class JoinDTO {
+public class JoinDto {
 
     @NotBlank
     private String loginId;

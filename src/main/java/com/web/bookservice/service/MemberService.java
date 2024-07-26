@@ -2,7 +2,7 @@ package com.web.bookservice.service;
 
 import com.web.bookservice.domain.Member;
 import com.web.bookservice.domain.Role;
-import com.web.bookservice.dto.JoinDTO;
+import com.web.bookservice.dto.JoinDto;
 import com.web.bookservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +19,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public boolean join(JoinDTO joinDTO) {
+    public boolean join(JoinDto joinDTO) {
 
          boolean isUser = memberRepository.existsByLoginId(joinDTO.getLoginId());
 
