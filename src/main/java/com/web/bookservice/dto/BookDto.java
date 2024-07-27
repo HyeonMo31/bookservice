@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class BookItemDto {
+public class BookDto {
 
     private String title;
     private String image;

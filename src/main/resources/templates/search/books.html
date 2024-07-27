@@ -134,12 +134,12 @@
           container.innerHTML = `<h1 class="mt-5 text-center">결과 값이 존재하지 않습니다.</h1>`;
           return;
         }
-        books.forEach((BookItemDto) => {
+        books.forEach((BookDto) => {
           const bookElement = document.createElement("div");
           const description =
-            BookItemDto.description.length > 200
-              ? BookItemDto.description.slice(0, 200) + "..."
-              : BookItemDto.description;
+            BookDto.description.length > 200
+              ? BookDto.description.slice(0, 200) + "..."
+              : BookDto.description;
 
           bookElement.className = "candidate-list-box card mt-4";
           bookElement.innerHTML = `
@@ -147,20 +147,20 @@
                         <div class="align-items-center row">
                             <div class="col-auto">
                                 <div class="candidate-list-images">
-                                    <a href="#"><img src="${BookItemDto.image}" alt="" class="avatar-md img-thumbnail" /></a>
+                                    <a href="#"><img src="${BookDto.image}" alt="" class="avatar-md img-thumbnail" /></a>
                                 </div>
                             </div>
                             <div class="col-lg-5">
                                 <div class="candidate-list-content mt-3 mt-lg-0">
                                     <h5 class="fs-19 mb-0">
-                                        <a class="primary-link" href="/search/book/${BookItemDto.isbn}">${BookItemDto.title}</a>
-                                        <span class="badge bg-success ms-1">${BookItemDto.price} ₩</span>
+                                        <a class="primary-link" href="/search/book/${BookDto.isbn}">${BookDto.title}</a>
+                                        <span class="badge bg-success ms-1">${BookDto.price} ₩</span>
                                     </h5>
-                                    <p class="text-muted mb-2">${BookItemDto.author}</p>
+                                    <p class="text-muted mb-2">${BookDto.author}</p>
                                     <ul class="list-inline mb-0 text-muted">
-                                        <li class="list-inline-item">ISBN : ${BookItemDto.isbn}</li>
-                                        <li class="list-inline-item">출판사 : ${BookItemDto.publisher}</li>
-                                        <li class="list-inline-item">출간일 : ${BookItemDto.pubdate}</li>
+                                        <li class="list-inline-item">ISBN : ${BookDto.isbn}</li>
+                                        <li class="list-inline-item">출판사 : ${BookDto.publisher}</li>
+                                        <li class="list-inline-item">출간일 : ${BookDto.pubdate}</li>
                                     </ul>
                                 </div>
                             </div>

@@ -12,5 +12,5 @@ public class NaverBookResponseDto {
 
 
     private int total;
-    private List<BookItemDto> items = new ArrayList<>();
+    private List<BookDto> items = new ArrayList<>();
 }

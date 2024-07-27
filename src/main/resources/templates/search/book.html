@@ -1,0 +1,122 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <html lang="en">
+    <head th:replace="fragments/header :: header"> </head>
+    <body>
+      <div class="container heightCal">
+        <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+        <div class="container px-4 px-lg-5 my-5">
+          <div class="row gx-4 gx-lg-5 align-items-center">
+            <div class="col-md-3">
+              <img class="img-fluid card-img-top mb-5 mb-md-0" alt="..." />
+            </div>
+            <div class="col-md-9">
+              <div class="small mb-1">
+                <span id="isbn">ISBN : </span>
+                <span></span>
+              </div>
+              <h1 id="title" class="display-9 fw-bolder">Shop item template</h1>
+              <div class="fs-6 mb-1">
+                <span id="author">저자 : </span>
+                <span class="fw-bolder"></span>
+              </div>
+              <div class="fs-6 mb-2">
+                <span id="publisher">출판사 : </span>
+                <span class="fw-bolder"></span>
+              </div>
+              <p class="lead fs-6"></p>
+              <div class="d-flex">
+                <form method="get">
+                  <button
+                    class="btn btn-outline-dark flex-shrink-0"
+                    type="submit"
+                  >
+                    즐겨찾기 추가
+                  </button>
+                </form>
+                <form method="get">
+                  <button
+                    class="btn btn-outline-dark flex-shrink-0"
+                    type="submit"
+                  >
+                    즐겨찾기 제거
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row bootstrap snippets bootdeys">
+          <div class="col-md-12 col-sm-12">
+            <div class="comment-wrapper">
+              <div class="panel panel-info">
+                <div id="text" class="panel-heading">한줄 평</div>
+                <div class="panel-body">
+                  <form method="post">
+                    <textarea
+                      name="review"
+                      class="form-control"
+                      placeholder="한줄평을 남겨보세요."
+                      rows="1"
+                    ></textarea>
+                    <textarea
+                      disabled
+                      name="review"
+                      class="form-control"
+                      placeholder="로그인 하십시오."
+                      rows="1"
+                    ></textarea>
+                    <br />
+                    <!--                숨겨서 보낼 필요 없이 pathVariable로 보내면 되겠구나.-->
+                    <!--                  잘 안돼서 그냥 숨겨서 보냄.-->
+                    <!--                <input type="hidden" name="isbn" th:value="${book.isbn}" />-->
+                    <button type="submit" class="btn btn-info pull-right">
+                      Post
+                    </button>
+                  </form>
+                  <div class="clearfix"></div>
+                  <hr />
+                  <ul class="media-list">
+                    <li class="media">
+                      <a href="#" class="pull-left">
+                        <img
+                          src="https://bootdey.com/img/Content/user_1.jpg"
+                          alt=""
+                          class="img-circle"
+                        />
+                      </a>
+                      <div class="media-body">
+                        <span class="text-muted pull-right">
+                          <small class="text-muted">작성시간</small>
+                        </span>
+                        <strong class="text-success">작성자.</strong>
+                        <p>텍스트</p>
+                        <div>
+                          <button
+                            th:onclick=""
+                            type="submit"
+                            class="btn btn-info pull-right"
+                          >
+                            삭제
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div th:replace="fragments/footer :: footer"></div>
+    </body>
+    <script>
+      const url = new URL(window.location.href);
+
+      const isbn = url.pathname.split("/").pop();
+      alert(isbn);
+    </script>
+  </html>
+</html>

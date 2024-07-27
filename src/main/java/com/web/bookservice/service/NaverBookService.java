@@ -3,12 +3,13 @@ package com.web.bookservice.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.bookservice.domain.Book;
-import com.web.bookservice.dto.BookItemDto;
+import com.web.bookservice.dto.BookDto;
 import com.web.bookservice.dto.NaverBookResponseDto;
 import com.web.bookservice.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -17,12 +18,12 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 @Slf4j
 public class NaverBookService {
@@ -65,7 +66,7 @@ public class NaverBookService {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
                 LocalDate date = LocalDate.parse(dateString, formatter);
 
-                BookItemDto item = new BookItemDto();
+                BookDto item = new BookDto();
 
                 item.setAuthor(itemNode.get("author").asText());
                 item.setIsbn(itemNode.get("isbn").asText());
