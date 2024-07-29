@@ -25,7 +25,7 @@ public class MemberDetailsService implements UserDetailsService {
         Member member = repository.findByLoginId(loginId);
 
         if(member == null) {
-            throw null;
+            throw new UsernameNotFoundException("사용자 정보를 찾을 수 없습니다.");
         }
 
         return new CustomMemberDetails(member);

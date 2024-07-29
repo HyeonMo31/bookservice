@@ -1,4 +1,7 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
   <html lang="en">
     <head th:replace="fragments/header :: header"> </head>
     <body>
@@ -7,23 +10,34 @@
         <div class="container px-4 px-lg-5 my-5">
           <div class="row gx-4 gx-lg-5 align-items-center">
             <div class="col-md-3">
-              <img class="img-fluid card-img-top mb-5 mb-md-0" alt="..." />
+              <img
+                id="image"
+                class="img-fluid card-img-top mb-5 mb-md-0"
+                alt="..."
+              />
             </div>
             <div class="col-md-9">
               <div class="small mb-1">
-                <span id="isbn">ISBN : </span>
-                <span></span>
+                <span>ISBN : </span>
+                <span id="isbn"></span>
               </div>
               <h1 id="title" class="display-9 fw-bolder">Shop item template</h1>
               <div class="fs-6 mb-1">
-                <span id="author">저자 : </span>
-                <span class="fw-bolder"></span>
+                <span>저자 : </span>
+                <span id="author" class="fw-bolder"></span>
               </div>
               <div class="fs-6 mb-2">
-                <span id="publisher">출판사 : </span>
-                <span class="fw-bolder"></span>
+                <span>출판사 : </span>
+                <span id="publisher" class="fw-bolder"></span>
               </div>
-              <p class="lead fs-6"></p>
+              <div class="fs-6 mb-2">
+                <span>가격 : </span>
+                <span id="price" class="fw-bolder"></span>
+              </div>
+              <div class="fs-6 mb-2">
+                <span>출간일 : </span>
+                <span id="pubdate" class="fw-bolder"></span>
+              </div>
               <div class="d-flex">
                 <form method="get">
                   <button
@@ -42,6 +56,7 @@
                   </button>
                 </form>
               </div>
+              <p id="description" class="lead fs-6"></p>
             </div>
           </div>
         </div>
@@ -51,59 +66,38 @@
           <div class="col-md-12 col-sm-12">
             <div class="comment-wrapper">
               <div class="panel panel-info">
-                <div id="text" class="panel-heading">한줄 평</div>
+                <div class="panel-heading">나의 생각</div>
                 <div class="panel-body">
-                  <form method="post">
+                  <div>
                     <textarea
-                      name="review"
+                      maxlength="255"
+                      sec:authorize="isAuthenticated()"
+                      id="review"
                       class="form-control"
-                      placeholder="한줄평을 남겨보세요."
-                      rows="1"
+                      placeholder="나의 생각을 남겨보세요."
+                      rows="3"
                     ></textarea>
                     <textarea
+                      sec:authorize="isAnonymous()"
                       disabled
+                      th:sec
                       name="review"
                       class="form-control"
                       placeholder="로그인 하십시오."
-                      rows="1"
+                      rows="3"
                     ></textarea>
                     <br />
-                    <!--                숨겨서 보낼 필요 없이 pathVariable로 보내면 되겠구나.-->
-                    <!--                  잘 안돼서 그냥 숨겨서 보냄.-->
-                    <!--                <input type="hidden" name="isbn" th:value="${book.isbn}" />-->
-                    <button type="submit" class="btn btn-info pull-right">
+                    <button
+                      id="addReview"
+                      type="submit"
+                      class="btn btn-info pull-right"
+                    >
                       Post
                     </button>
-                  </form>
+                  </div>
                   <div class="clearfix"></div>
                   <hr />
-                  <ul class="media-list">
-                    <li class="media">
-                      <a href="#" class="pull-left">
-                        <img
-                          src="https://bootdey.com/img/Content/user_1.jpg"
-                          alt=""
-                          class="img-circle"
-                        />
-                      </a>
-                      <div class="media-body">
-                        <span class="text-muted pull-right">
-                          <small class="text-muted">작성시간</small>
-                        </span>
-                        <strong class="text-success">작성자.</strong>
-                        <p>텍스트</p>
-                        <div>
-                          <button
-                            th:onclick=""
-                            type="submit"
-                            class="btn btn-info pull-right"
-                          >
-                            삭제
-                          </button>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
+                  <ul id="reviewList" class="media-list"></ul>
                 </div>
               </div>
             </div>
@@ -116,7 +110,101 @@
       const url = new URL(window.location.href);
 
       const isbn = url.pathname.split("/").pop();
-      alert(isbn);
+
+      async function fetchData(url) {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          return data;
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          throw error;
+        }
+      }
+
+      function displayBook(book) {
+        document.getElementById("isbn").innerText = book.isbn;
+        document.getElementById("title").innerText = book.title;
+        document.getElementById("author").innerText = book.author;
+        document.getElementById("publisher").innerText = book.publisher;
+        document.getElementById("image").src = book.image;
+        document.getElementById("description").innerText = book.description;
+        document.getElementById("price").innerText = book.price;
+        document.getElementById("pubdate").innerText = book.pubdate;
+      }
+
+      function displayReviews(reviews) {
+        const reviewList = document.getElementById("reviewList");
+
+        if (reviews.length === 0) {
+          reviewList.innerHTML = `<h6 class="mt-5 text-center">등록 된 댓글이 존재하지 않습니다.</h6>`;
+          return;
+        }
+
+        reviews.forEach((review) => {
+          const reviewLi = document.createElement("li");
+          reviewLi.innerHTML = `<li class="media">
+                      <div class="media-body">
+                        <strong class="text-success">${review.name}</strong>
+                        <span class="text-muted pull-right">
+                          <small class="text-muted">${review.writeDate}</small>
+                        </span>                      
+                        <p style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">${review.text}</p>
+                        <div>
+                          <button
+                            th:onclick=""
+                            type="submit"
+                            class="btn btn-info pull-right"
+                          >
+                            삭제
+                          </button>
+                        </div>
+                      </div>
+                    </li>`;
+          reviewList.appendChild(reviewLi);
+        });
+      }
+
+      async function render() {
+        const bookDataUrl = `/api/books/${isbn}`;
+        const reviewDataUrl = `/api/books/${isbn}/reviews`;
+        try {
+          const book = await fetchData(bookDataUrl);
+          const reviews = await fetchData(reviewDataUrl);
+          // 책 정보와 리뷰 정보를 표시
+          displayBook(book);
+          displayReviews(reviews);
+        } catch (error) {
+          console.error("Error fetching book details:", error);
+        }
+      }
+
+      function reviewSave() {
+        const text = document.getElementById("review").value.trim();
+        fetch(`/api/books/${isbn}/reviews`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ isbn, text }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            window.location.reload();
+          })
+          .catch((error) => {
+            console.error("Error fetching books:", error);
+          });
+      }
+
+      document
+        .getElementById("addReview")
+        .addEventListener("click", reviewSave);
+
+      render();
     </script>
   </html>
 </html>

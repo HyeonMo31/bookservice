@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  >
   <head>
     <meta charset="UTF-8" />
     <title>Title</title>
@@ -28,7 +31,7 @@
           </li>
         </ul>
 
-        <div sec:authorize="isAnonymous" class="col-md-3 text-end">
+        <div sec:authorize="isAnonymous()" class="col-md-3 text-end">
           <button
             th:onclick="|location.href='@{/login}'|"
             type="button"
@@ -44,8 +47,9 @@
             회원가입
           </button>
         </div>
-        <div sec:authorize="isAuthenticated()"
-             class="col-md-3 text-end d-flex justify-content-end"
+        <div
+          sec:authorize="isAuthenticated()"
+          class="col-md-3 text-end d-flex justify-content-end"
         >
           <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn-outline-primary me-2">

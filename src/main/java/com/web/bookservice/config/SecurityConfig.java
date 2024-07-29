@@ -40,7 +40,7 @@ public class SecurityConfig {
                         //로그인한 데이터를 특정 경로로 보낸다 그 경로가 loginProc이다.
                         .loginProcessingUrl("/login")
                         .usernameParameter("loginId")
-                        .defaultSuccessUrl("/", true)
+//                        .defaultSuccessUrl("/", true)
                         .permitAll()
                 );
 
