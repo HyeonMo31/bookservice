@@ -2,6 +2,7 @@ package com.web.bookservice.controller;
 
 
 import com.web.bookservice.dto.CustomMemberDetails;
+import com.web.bookservice.dto.MsgResponseDto;
 import com.web.bookservice.dto.ReviewCommentResponseDto;
 import com.web.bookservice.dto.ReviewRequestDto;
 import com.web.bookservice.service.ReviewService;
@@ -20,24 +21,31 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     /**
-     * DB, ISBN을 통한 책의 리뷰 조회
+     * 리뷰 조회
      */
     @GetMapping("/api/books/{isbn}/reviews")
     public List<ReviewCommentResponseDto> findAllReviews(@PathVariable("isbn")String isbn) {
-
         return reviewService.findReviewsByIsbn(isbn);
-
     }
 
     /**
      * 리뷰 등록
      */
     @PostMapping("/api/books/{isbn}/reviews")
-    public ResponseEntity<?> addReview(@PathVariable("isbn")String isbn, @RequestBody ReviewRequestDto request,
-                                       @AuthenticationPrincipal CustomMemberDetails member) {
-        System.out.println("request = " + request.getText());
+    public ResponseEntity<ReviewCommentResponseDto> addReview(@PathVariable("isbn")String isbn,
+                                                              @RequestBody ReviewRequestDto request,
+                                                              @AuthenticationPrincipal CustomMemberDetails member) {
         return ResponseEntity.ok(reviewService.save(isbn, request, member.getUsername()));
+    }
 
+    /**
+     * 리뷰 삭제
+     */
+    @DeleteMapping("/api/books/{isbn}/reviews/{reviewId}")
+    public ResponseEntity<MsgResponseDto> deleteReview(@PathVariable("isbn")String isbn,
+                                                        @PathVariable("reviewId")Long reviewId,
+                                                       @AuthenticationPrincipal CustomMemberDetails member) {
+        return ResponseEntity.ok(reviewService.deleteReview(isbn, reviewId, member.getUsername()));
     }
 
 
