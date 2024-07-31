@@ -2,6 +2,7 @@ package com.web.bookservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,16 +23,24 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         //누구나 접근
-                        .requestMatchers("/", "/login", "/css/**", "/img/**", "/join", "/error",
-                                "/search", "/search/**", "/api/**").permitAll()
+                        .requestMatchers("/css/**", "/img/**", "/join", "/error").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/", "/login", "/search", "/search/**",
+                                "/api/books", "/api/books/{isbn}", "/api/members", "/api/books/{isbn}/reviews",
+                                "/api/books/{isbn}/bookmarks").permitAll()
                         //로그인한 사용자 누구나 접근
-                        .requestMatchers("/page").authenticated()
+
+                        .requestMatchers(HttpMethod.POST,"/api/books/{isbn}/bookmarks", "/api/books/{isbn}/reviews").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/books/{isbn}/reviews/{reviewId}").authenticated()
                         //역할에 따라 접근 (로그인 필요)
+
                         .requestMatchers("/admin").hasRole("ADMIN")
                         //역할에 따라 접근 여러가지 (로그인 필요)
+
                         .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
                         //위에서 적지 않은 경로를 처리하는 것이 anyRequest이다. anyRequset.authenticated는
                         //위에 적지 않은 경로는 로그인 처리가 되어야한다는 것이다.
+
                         .anyRequest().authenticated()
                 );
         //인가되지 않은 경로에 대해 로그인 페이지로 이동하게 한다.

@@ -21,7 +21,7 @@ public class BookMarkController {
     private final BookMarkService bookMarkService;
 
     /**
-     * 즐겨찾기 조회
+     * 즐겨찾기 여부 조회
      */
     @GetMapping("/api/books/{isbn}/bookmarks")
     public MsgResponseDto findBookMark(@PathVariable("isbn")String isbn,
@@ -35,14 +35,8 @@ public class BookMarkController {
     @PostMapping("/api/books/{isbn}/bookmarks")
     public ResponseEntity addBookMark(@PathVariable("isbn")String isbn,
                                       @AuthenticationPrincipal CustomMemberDetails member) {
-        try {
-            bookMarkService.addBookMark(isbn, member);
-        }
-        catch (UsernameNotFoundException e) {
-            System.out.println("e.getMessage() = " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(e.getMessage());
-        }
-        return ResponseEntity.ok("즐겨찾기 완료");
+        System.out.println("들엉ㄴ");
+        return ResponseEntity.ok(new MsgResponseDto("즐겨찾기 등록 완료"));
     }
 
 

@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewController {
 
-
     private final ReviewService reviewService;
 
     /**

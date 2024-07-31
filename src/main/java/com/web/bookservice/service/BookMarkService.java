@@ -24,9 +24,7 @@ public class BookMarkService {
 
         Book book = bookRepository.findByIsbn(isbn);
 
-        if(book == null)
-            return new MsgResponseDto("false");
-        if(member == null)
+        if(book == null || member == null)
             return new MsgResponseDto("false");
 
         Member findMember = memberRepository.findByLoginId(member.getUsername());
@@ -40,9 +38,6 @@ public class BookMarkService {
     }
 
     public void addBookMark(String isbn, CustomMemberDetails member) {
-
-        if(member == null)
-            throw new UsernameNotFoundException("유저를 찾을 수 없음");
 
         Book book = bookRepository.findByIsbn(isbn);
         Member findMember = memberRepository.findByLoginId(member.getUsername());
