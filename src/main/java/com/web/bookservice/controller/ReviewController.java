@@ -2,7 +2,7 @@ package com.web.bookservice.controller;
 
 
 import com.web.bookservice.dto.CustomMemberDetails;
-import com.web.bookservice.dto.MsgResponseDto;
+import com.web.bookservice.dto.ResponseCodeDto;
 import com.web.bookservice.dto.ReviewCommentResponseDto;
 import com.web.bookservice.dto.ReviewRequestDto;
 import com.web.bookservice.service.ReviewService;
@@ -41,9 +41,9 @@ public class ReviewController {
      * 리뷰 삭제
      */
     @DeleteMapping("/api/books/{isbn}/reviews/{reviewId}")
-    public ResponseEntity<MsgResponseDto> deleteReview(@PathVariable("isbn")String isbn,
+    public ResponseEntity<ResponseCodeDto> deleteReview(@PathVariable("isbn")String isbn,
                                                         @PathVariable("reviewId")Long reviewId,
-                                                       @AuthenticationPrincipal CustomMemberDetails member) {
+                                                        @AuthenticationPrincipal CustomMemberDetails member) {
         return ResponseEntity.ok(reviewService.deleteReview(isbn, reviewId, member.getUsername()));
     }
 

@@ -5,6 +5,7 @@ import com.web.bookservice.domain.Role;
 import com.web.bookservice.dto.CustomMemberDetails;
 import com.web.bookservice.dto.JoinDto;
 import com.web.bookservice.dto.MemberResponseDto;
+import com.web.bookservice.dto.ResponseCodeDto;
 import com.web.bookservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -53,6 +54,7 @@ public class MemberService {
                 findMember.getCity(), findMember.getJoinDate());
 
     }
+
 
 
 

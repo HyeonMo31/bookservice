@@ -3,9 +3,12 @@ package com.web.bookservice.controller;
 
 import com.web.bookservice.dto.CustomMemberDetails;
 import com.web.bookservice.dto.MemberResponseDto;
+import com.web.bookservice.exception.MemberNotAuthenticatedException;
 import com.web.bookservice.repository.MemberRepository;
 import com.web.bookservice.service.MemberService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +27,11 @@ public class MemberController {
 
          return memberService.findLoginMember(member);
 
+     }
+     @GetMapping("/api/mem")
+    public void find(@AuthenticationPrincipal CustomMemberDetails member) {
+         System.out.println("여기 안들어옺ㄶ.");
+        throw new MemberNotAuthenticatedException("뭐");
      }
 
 

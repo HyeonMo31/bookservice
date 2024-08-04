@@ -4,13 +4,16 @@ import com.web.bookservice.domain.Book;
 import com.web.bookservice.domain.Bookmark;
 import com.web.bookservice.domain.Member;
 import com.web.bookservice.dto.CustomMemberDetails;
-import com.web.bookservice.dto.MsgResponseDto;
+import com.web.bookservice.dto.ResponseCodeDto;
+import com.web.bookservice.exception.BookNotFoundException;
+import com.web.bookservice.exception.MemberNotAuthenticatedException;
 import com.web.bookservice.repository.BookMarkRepository;
 import com.web.bookservice.repository.BookRepository;
 import com.web.bookservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import javax.naming.AuthenticationException;
 
 @Service
 @RequiredArgsConstructor
@@ -20,33 +23,39 @@ public class BookMarkService {
     private final MemberRepository memberRepository;
     private final BookMarkRepository bookMarkRepository;
 
-    public MsgResponseDto findBookMark(String isbn, CustomMemberDetails member) {
+    public boolean findBookMark(String isbn, CustomMemberDetails member) {
 
-        Book book = bookRepository.findByIsbn(isbn);
+        Book findBook = bookRepository.findByIsbn(isbn);
 
-        if(book == null || member == null)
-            return new MsgResponseDto("false");
+        if(findBook == null || member == null)
+            return false;
 
         Member findMember = memberRepository.findByLoginId(member.getUsername());
-        Bookmark bookmark = bookMarkRepository.findByBookAndMember(book, findMember);
+        Bookmark bookmark = bookMarkRepository.findByBookAndMember(findBook, findMember);
 
         if(bookmark == null)
-            return new MsgResponseDto("false");
+            return false;
         else
-            return new MsgResponseDto("true");
+            return true;
 
     }
 
-    public void addBookMark(String isbn, CustomMemberDetails member) {
+    public ResponseCodeDto addBookMark(String isbn, CustomMemberDetails member) {
 
-        Book book = bookRepository.findByIsbn(isbn);
+        Book findBook = bookRepository.findByIsbn(isbn);
+        if(findBook == null)
+            throw new BookNotFoundException();
+        if(member == null)
+            throw new MemberNotAuthenticatedException("로그인 되어 있지 않습니다.");
         Member findMember = memberRepository.findByLoginId(member.getUsername());
 
         Bookmark bookmark = new Bookmark();
-        bookmark.setBook(book);
+        bookmark.setBook(findBook);
         bookmark.setMember(findMember);
 
         bookMarkRepository.save(bookmark);
+
+        return new ResponseCodeDto(200, "즐겨찾기가 추가 되었습니다.");
 
     }
 

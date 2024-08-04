@@ -3,8 +3,7 @@ package com.web.bookservice.service;
 import com.web.bookservice.domain.Book;
 import com.web.bookservice.domain.Member;
 import com.web.bookservice.domain.Review;
-import com.web.bookservice.dto.MemberResponseDto;
-import com.web.bookservice.dto.MsgResponseDto;
+import com.web.bookservice.dto.ResponseCodeDto;
 import com.web.bookservice.dto.ReviewCommentResponseDto;
 import com.web.bookservice.dto.ReviewRequestDto;
 import com.web.bookservice.repository.BookRepository;
@@ -44,22 +43,15 @@ public class ReviewService {
 
     }
 
-    public MsgResponseDto deleteReview(String isbn, Long reviewId, String loginId) {
+    public ResponseCodeDto deleteReview(String isbn, Long reviewId, String loginId) {
 
         Book book = bookRepository.findByIsbn(isbn);
         Member member = memberRepository.findByLoginId(loginId);
         Optional<Review> review = reviewRepository.findById(reviewId);
 
-        if(book == null)
-            return new MsgResponseDto("책 정보가 존재하지 않습니다.");
-        if(member == null)
-            return new MsgResponseDto("로그인 세션이 만료 되었습니다.");
-        if(review.isEmpty())
-            return new MsgResponseDto("리뷰가 존재하지 않습니다.");
-
         reviewRepository.delete(review.get());
 
-        return new MsgResponseDto("리뷰가 삭제 되었습니다.");
+        return new ResponseCodeDto(200, "리뷰가 삭제 되었습니다.");
     }
 
     public List<ReviewCommentResponseDto> findReviewsByIsbn(String isbn) {

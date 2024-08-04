@@ -27,7 +27,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/", "/login", "/search", "/search/**",
                                 "/api/books", "/api/books/{isbn}", "/api/members", "/api/books/{isbn}/reviews",
-                                "/api/books/{isbn}/bookmarks").permitAll()
+                                "/api/books/{isbn}/bookmarks", "/api/mem").permitAll()
                         //로그인한 사용자 누구나 접근
 
                         .requestMatchers(HttpMethod.POST,"/api/books/{isbn}/bookmarks", "/api/books/{isbn}/reviews").authenticated()
