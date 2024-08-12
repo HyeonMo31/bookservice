@@ -25,13 +25,9 @@ public class SecurityConfig {
                         //누구나 접근
                         .requestMatchers("/css/**", "/img/**", "/join", "/error").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/", "/login", "/search", "/search/**",
-                                "/api/books", "/api/books/{isbn}", "/api/members", "/api/books/{isbn}/reviews",
-                                "/api/books/{isbn}/bookmarks", "/api/mem").permitAll()
+                        .requestMatchers("/", "/login", "/search", "/search/**",
+                                "/api/**", "/swagger-ui/**", "/v3/api-docs/**", "/api*", "/api/logistics").permitAll()
                         //로그인한 사용자 누구나 접근
-
-                        .requestMatchers(HttpMethod.POST,"/api/books/{isbn}/bookmarks", "/api/books/{isbn}/reviews").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/books/{isbn}/reviews/{reviewId}").authenticated()
                         //역할에 따라 접근 (로그인 필요)
 
                         .requestMatchers("/admin").hasRole("ADMIN")
@@ -49,7 +45,7 @@ public class SecurityConfig {
                         //로그인한 데이터를 특정 경로로 보낸다 그 경로가 loginProc이다.
                         .loginProcessingUrl("/login")
                         .usernameParameter("loginId")
-//                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("/", true)
                         .permitAll()
                 );
 

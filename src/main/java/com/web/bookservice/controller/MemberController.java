@@ -28,11 +28,5 @@ public class MemberController {
          return memberService.findLoginMember(member);
 
      }
-     @GetMapping("/api/mem")
-    public void find(@AuthenticationPrincipal CustomMemberDetails member) {
-         System.out.println("여기 안들어옺ㄶ.");
-        throw new MemberNotAuthenticatedException("뭐");
-     }
-
 
 }

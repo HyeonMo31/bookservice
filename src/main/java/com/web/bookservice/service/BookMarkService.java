@@ -6,6 +6,7 @@ import com.web.bookservice.domain.Member;
 import com.web.bookservice.dto.CustomMemberDetails;
 import com.web.bookservice.dto.ResponseCodeDto;
 import com.web.bookservice.exception.BookNotFoundException;
+import com.web.bookservice.exception.ErrorMessage;
 import com.web.bookservice.exception.MemberNotAuthenticatedException;
 import com.web.bookservice.repository.BookMarkRepository;
 import com.web.bookservice.repository.BookRepository;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
 
+import static com.web.bookservice.exception.ErrorMessage.*;
+
 @Service
 @RequiredArgsConstructor
 public class BookMarkService {
@@ -23,20 +26,22 @@ public class BookMarkService {
     private final MemberRepository memberRepository;
     private final BookMarkRepository bookMarkRepository;
 
-    public boolean findBookMark(String isbn, CustomMemberDetails member) {
+    public ResponseCodeDto findBookMark(String isbn, CustomMemberDetails member) {
 
         Book findBook = bookRepository.findByIsbn(isbn);
 
-        if(findBook == null || member == null)
-            return false;
+        if(findBook == null)
+            throw new BookNotFoundException();
+        if(member == null)
+            return new ResponseCodeDto(401, "false");
 
         Member findMember = memberRepository.findByLoginId(member.getUsername());
         Bookmark bookmark = bookMarkRepository.findByBookAndMember(findBook, findMember);
 
         if(bookmark == null)
-            return false;
+            return new ResponseCodeDto(404, "false");
         else
-            return true;
+            return new ResponseCodeDto(200, "true");
 
     }
 
@@ -46,12 +51,12 @@ public class BookMarkService {
         if(findBook == null)
             throw new BookNotFoundException();
         if(member == null)
-            throw new MemberNotAuthenticatedException("로그인 되어 있지 않습니다.");
+            throw new MemberNotAuthenticatedException(MEMBER_NOT_AUTHORIZED.getMessage());
+
         Member findMember = memberRepository.findByLoginId(member.getUsername());
 
-        Bookmark bookmark = new Bookmark();
-        bookmark.setBook(findBook);
-        bookmark.setMember(findMember);
+        Bookmark bookmark = new Bookmark(findBook, findMember);
+
 
         bookMarkRepository.save(bookmark);
 
@@ -59,5 +64,20 @@ public class BookMarkService {
 
     }
 
+    public ResponseCodeDto deleteBookMark(String isbn, CustomMemberDetails member) {
+
+        Book findBook = bookRepository.findByIsbn(isbn);
+
+        if(member == null)
+            throw new MemberNotAuthenticatedException("로그인이 되어 있지 않습니다.");
+
+        Member findMember = memberRepository.findByLoginId(member.getUsername());
+
+        Bookmark findBookMark = bookMarkRepository.findByBookAndMember(findBook, findMember);
+
+        bookMarkRepository.delete(findBookMark);
+
+        return new ResponseCodeDto(200, "삭제 완료");
+    }
 
 }

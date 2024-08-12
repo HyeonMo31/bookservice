@@ -2,15 +2,18 @@ package com.web.bookservice.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import org.springframework.context.event.EventListener;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
-@ToString
+@Getter
+@EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
     @Id
@@ -26,10 +29,19 @@ public class Member {
 
     private String city;
 
-    private LocalDateTime joinDate;
+    @CreatedDate
+    private LocalDateTime createdDate;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public Member(String password, String loginId, Role role, String name, String city) {
+        this.password = password;
+        this.loginId = loginId;
+        this.role = role;
+        this.name = name;
+        this.city = city;
+    }
 
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 //    private List<Bookmark> bookmarks;

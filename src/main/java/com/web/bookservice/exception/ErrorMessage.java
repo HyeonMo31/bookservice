@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public enum ErrorMessage {
 
-    MEMBER_NOT_AUTHORIZED("사용자를 찾을 수 없습니다."),
+    MEMBER_NOT_AUTHORIZED("로그인 되어 있지 않습니다."),
     BOOK_NOT_FOUND("책을 찾을 수 없습니다.");
 
     @Getter

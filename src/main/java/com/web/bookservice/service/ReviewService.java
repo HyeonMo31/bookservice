@@ -3,9 +3,13 @@ package com.web.bookservice.service;
 import com.web.bookservice.domain.Book;
 import com.web.bookservice.domain.Member;
 import com.web.bookservice.domain.Review;
+import com.web.bookservice.dto.CustomMemberDetails;
 import com.web.bookservice.dto.ResponseCodeDto;
 import com.web.bookservice.dto.ReviewCommentResponseDto;
 import com.web.bookservice.dto.ReviewRequestDto;
+import com.web.bookservice.exception.BookNotFoundException;
+import com.web.bookservice.exception.ErrorMessage;
+import com.web.bookservice.exception.MemberNotAuthenticatedException;
 import com.web.bookservice.repository.BookRepository;
 import com.web.bookservice.repository.MemberRepository;
 import com.web.bookservice.repository.ReviewRepository;
@@ -18,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.web.bookservice.exception.ErrorMessage.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -27,26 +33,35 @@ public class ReviewService {
     private final BookRepository bookRepository;
     private final MemberRepository memberRepository;
 
-    public ReviewCommentResponseDto save(String isbn, ReviewRequestDto request, String loginId) {
+    public ReviewCommentResponseDto save(String isbn, ReviewRequestDto request, CustomMemberDetails member) {
 
-        Member member = memberRepository.findByLoginId(loginId);
-        Book book = bookRepository.findByIsbn(isbn);
-        Review review = new Review();
+        Book findBook = bookRepository.findByIsbn(isbn);
 
-        review.setBook(book);
-        review.setText(request.getText());
-        review.setWriteDate(LocalDateTime.now());
-        review.setMember(member);
+        if(findBook == null)
+            throw new BookNotFoundException();
+        if(member == null)
+            throw new MemberNotAuthenticatedException(MEMBER_NOT_AUTHORIZED.getMessage());
+
+        Member findMember = memberRepository.findByLoginId(member.getUsername());
+        Review review = new Review(findMember, findBook, request.getText());
+
         Review savedReview = reviewRepository.save(review);
 
-        return new ReviewCommentResponseDto(savedReview.getId(), loginId, member.getName(), request.getText(), LocalDateTime.now());
+        return new ReviewCommentResponseDto(savedReview.getId(), findMember.getLoginId(), findMember.getName(), request.getText(), LocalDateTime.now());
 
     }
 
-    public ResponseCodeDto deleteReview(String isbn, Long reviewId, String loginId) {
+    public ResponseCodeDto deleteReview(String isbn, Long reviewId, CustomMemberDetails member) {
 
-        Book book = bookRepository.findByIsbn(isbn);
-        Member member = memberRepository.findByLoginId(loginId);
+        Book findBook = bookRepository.findByIsbn(isbn);
+
+        if(findBook == null)
+            throw new BookNotFoundException();
+        if(member == null)
+            throw new MemberNotAuthenticatedException(MEMBER_NOT_AUTHORIZED.getMessage());
+
+        Member findMember = memberRepository.findByLoginId(member.getUsername());
+
         Optional<Review> review = reviewRepository.findById(reviewId);
 
         reviewRepository.delete(review.get());
@@ -66,7 +81,7 @@ public class ReviewService {
                     new ReviewCommentResponseDto(review.getId(), review.getMember().getLoginId(),
                             review.getMember().getName(),
                             review.getText(),
-                            review.getWriteDate());
+                            review.getCreatedDate());
             reviewCommentResponseDtoList.add(reviewCommentResponseDto);
         }
         return reviewCommentResponseDtoList;

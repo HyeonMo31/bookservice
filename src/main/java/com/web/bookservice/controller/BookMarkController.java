@@ -4,11 +4,9 @@ import com.web.bookservice.dto.CustomMemberDetails;
 import com.web.bookservice.dto.ResponseCodeDto;
 import com.web.bookservice.service.BookMarkService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,20 +18,31 @@ public class BookMarkController {
      * 즐겨찾기 여부 조회
      */
     @GetMapping("/api/books/{isbn}/bookmarks")
-    public boolean findBookMark(@PathVariable("isbn")String isbn,
+    public ResponseEntity<ResponseCodeDto> findBookMark(@PathVariable("isbn")String isbn,
                                        @AuthenticationPrincipal CustomMemberDetails member) {
-        return bookMarkService.findBookMark(isbn, member);
+        return ResponseEntity.ok(bookMarkService.findBookMark(isbn, member));
     }
 
     /**
      * 즐겨찾기 등록
      */
     @PostMapping("/api/books/{isbn}/bookmarks")
-    public ResponseCodeDto addBookMark(@PathVariable("isbn")String isbn,
-                                       @AuthenticationPrincipal CustomMemberDetails member) {
+    public ResponseEntity<ResponseCodeDto> addBookMark(@PathVariable("isbn")String isbn,
+                                                       @AuthenticationPrincipal CustomMemberDetails member) {
 
-        return bookMarkService.addBookMark(isbn, member);
+        return ResponseEntity.ok(bookMarkService.addBookMark(isbn, member));
     }
+
+    /**
+     * 즐겨찾기 삭제
+     */
+
+    @DeleteMapping("/api/books/{isbn}/bookmarks")
+    public ResponseEntity<ResponseCodeDto> deleteBookMark(@PathVariable("isbn")String isbn,
+                                                          @AuthenticationPrincipal CustomMemberDetails member) {
+        return ResponseEntity.ok(bookMarkService.deleteBookMark(isbn, member));
+    }
+
 
 
 

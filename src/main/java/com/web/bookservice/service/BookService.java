@@ -14,22 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookService {
 
     private final BookRepository bookRepository;
-    private final ReviewService reviewService;
-
-    public Book findByIsbn(String isbn){
-        Book findBook = bookRepository.findByIsbn(isbn);
-        if(findBook == null) {
-            throw  new BookNotFoundException();
-        }
-        return findBook;
-    }
 
     public BookDto findBookDetail(String isbn) {
 
         Book findBook = bookRepository.findByIsbn(isbn);
 
         if(findBook == null) {
-            throw  new BookNotFoundException();
+            throw new BookNotFoundException();
         }
 
         BookDto bookDto = new BookDto();

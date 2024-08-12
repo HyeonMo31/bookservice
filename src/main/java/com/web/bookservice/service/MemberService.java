@@ -6,6 +6,8 @@ import com.web.bookservice.dto.CustomMemberDetails;
 import com.web.bookservice.dto.JoinDto;
 import com.web.bookservice.dto.MemberResponseDto;
 import com.web.bookservice.dto.ResponseCodeDto;
+import com.web.bookservice.exception.ErrorMessage;
+import com.web.bookservice.exception.MemberNotAuthenticatedException;
 import com.web.bookservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+
+import static com.web.bookservice.exception.ErrorMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,13 +34,8 @@ public class MemberService {
          if(isUser)
              return false;
 
-         Member member = new Member();
-         member.setPassword(bCryptPasswordEncoder.encode(joinDTO.getPassword()));
-         member.setJoinDate(LocalDateTime.now());
-         member.setLoginId(joinDTO.getLoginId());
-         member.setRole(Role.USER);
-         member.setName(joinDTO.getName());
-         member.setCity(joinDTO.getCity());
+         Member member = new Member(bCryptPasswordEncoder.encode(joinDTO.getPassword()),
+                 joinDTO.getLoginId(), Role.USER, joinDTO.getName(), joinDTO.getCity());
 
          memberRepository.save(member);
 
@@ -51,7 +50,7 @@ public class MemberService {
         Member findMember = memberRepository.findByLoginId(member.getUsername());
 
         return new MemberResponseDto(findMember.getName(), findMember.getLoginId(),
-                findMember.getCity(), findMember.getJoinDate());
+                findMember.getCity(), findMember.getCreatedDate());
 
     }
 

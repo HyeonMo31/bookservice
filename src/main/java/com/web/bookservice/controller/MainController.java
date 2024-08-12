@@ -27,7 +27,6 @@ public class MainController {
 
     @GetMapping("/search/book/{isbn}")
     public String searchBook() {
-        log.info("여기 들어오나용." );
         return "search/book";
     }
 }

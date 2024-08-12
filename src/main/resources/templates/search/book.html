@@ -40,18 +40,11 @@
               </div>
               <div class="d-flex">
                 <button
-                  id="bookMarkAdd"
+                  id="bookMarkButton"
                   class="btn btn-outline-dark flex-shrink-0"
                   type="submit"
                 >
                   즐겨찾기 추가
-                </button>
-                <button
-                  id="bookMarkRemove"
-                  class="btn btn-outline-dark flex-shrink-0 hidden"
-                  type="submit"
-                >
-                  즐겨찾기 제거
                 </button>
               </div>
               <p id="description" class="lead fs-6"></p>
@@ -106,18 +99,199 @@
       <div th:replace="fragments/footer :: footer"></div>
     </body>
     <script>
+      // const url = new URL(window.location.href);
+      // const reviewList = document.getElementById("reviewList");
+      // const bookMarkButton = document.getElementById("bookMarkButton");
+      // const isbn = url.pathname.split("/").pop();
+
+      // async function fetchData(url) {
+      //   try {
+      //     const response = await fetch(url);
+      //     const data = await response.json();
+      //     if (!response.ok) {
+      //       if (data.code == 404) {
+      //         alert("잘못된 접근입니다.");
+      //         window.location.href = "/";
+      //         return;
+      //       }
+      //     }
+      //     return data;
+      //   } catch (error) {
+      //     console.error("Error fetching data:", error);
+      //     throw error;
+      //   }
+      // }
+
+      // function displayBook(book) {
+      //   document.getElementById("isbn").innerText = book.isbn;
+      //   document.getElementById("title").innerText = book.title;
+      //   document.getElementById("author").innerText = book.author;
+      //   document.getElementById("publisher").innerText = book.publisher;
+      //   document.getElementById("image").src = book.image;
+      //   document.getElementById("description").innerText = book.description;
+      //   document.getElementById("price").innerText = book.price;
+      //   document.getElementById("pubdate").innerText = book.pubdate;
+      // }
+
+      // function displayReviews(reviews, member) {
+      //   if (reviews.length === 0) {
+      //     reviewList.innerHTML = `<h6 class="mt-5 text-center">등록 된 댓글이 존재하지 않습니다.</h6>`;
+      //     return;
+      //   }
+      //   reviews.forEach((review) => {
+      //     const reviewLi = document.createElement("li");
+      //     reviewLi.innerHTML = `<li id="${review.id}" class="media">
+      //                 <div class="media-body">
+      //                   <strong class="text-success">${review.name}</strong>
+      //                   <span class="text-muted pull-right">
+      //                     <small class="text-muted">${review.writeDate}</small>
+      //                   </span>
+      //                   <p style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">${review.text}</p>
+      //                   <div>
+      //                     <button
+      //                       type="submit"
+      //                       class="btn btn-info pull-right deleteBtn"
+      //                     >
+      //                       삭제
+      //                     </button>
+      //                   </div>
+      //                 </div>
+      //               </li>`;
+
+      //     reviewList.appendChild(reviewLi);
+      //     const deleteButtons = document.querySelectorAll(".deleteBtn");
+      //     const lastDeleteButton = deleteButtons[deleteButtons.length - 1];
+      //     if (review.loginId != member.loginId) {
+      //       lastDeleteButton.classList.add("hidden");
+      //     }
+      //   });
+      // }
+
+      // function displayBookMark(bookMark) {
+      //   const bookMarked = bookMark.message;
+
+      //   if (bookMarked == "true") {
+      //     document.getElementById("bookMarkButton").textContent =
+      //       "즐겨찾기 제거";
+      //   }
+      // }
+
+      // function reviewSave() {
+      //   const text = document.getElementById("review").value.trim();
+      //   fetch(`/api/books/${isbn}/reviews`, {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({ isbn, text }),
+      //   })
+      //     .then((response) => response.json())
+      //     .then((data) => {
+      //       window.location.reload();
+      //     })
+      //     .catch((error) => {
+      //       console.error("Error fetching books:", error);
+      //     });
+      // }
+
+      // async function render() {
+      //   const bookDataUrl = `/api/books/${isbn}`;
+      //   const reviewDataUrl = `/api/books/${isbn}/reviews`;
+      //   const loginMemberUrl = `/api/members`;
+      //   const bookMarkUrl = `/api/books/${isbn}/bookmarks`;
+      //   try {
+      //     const member = await fetchData(loginMemberUrl);
+      //     const book = await fetchData(bookDataUrl);
+      //     const reviews = await fetchData(reviewDataUrl);
+      //     const bookMark = await fetchData(bookMarkUrl);
+      //     // 책 정보와 리뷰 정보를 표시
+      //     displayBook(book);
+      //     displayReviews(reviews, member);
+      //     displayBookMark(bookMark);
+      //   } catch (error) {
+      //     console.error("Error fetching book details:", error);
+      //   }
+      // }
+
+      // render();
+
+      // const addReview = document.getElementById("addReview");
+      // if (addReview != null) {
+      //   addReview.addEventListener("click", reviewSave);
+      // }
+
+      // reviewList.addEventListener("click", function (event) {
+      //   if (event.target.classList.contains("deleteBtn")) {
+      //     const reviewItem = event.target.closest(".media");
+      //     const reviewId = reviewItem.id;
+      //     console.log(reviewId);
+      //     if (confirm("정말로 이 리뷰를 삭제하시겠습니까?")) {
+      //       fetch(`/api/books/${isbn}/reviews/${reviewId}`, {
+      //         method: "DELETE",
+      //       })
+      //         .then((response) => response.json())
+      //         .then((data) => {
+      //           alert(data.message);
+      //           window.location.reload();
+      //         })
+      //         .catch((error) => {
+      //           console.error("Error deleting review:", error);
+      //           alert("리뷰 삭제 중 오류가 발생했습니다.");
+      //         });
+      //     }
+      //   }
+      // });
+
+      // bookMarkButton.addEventListener("click", function (event) {
+      //   if (bookMarkButton.textContent.trim() == "즐겨찾기 추가") {
+      //     fetch(`/api/books/${isbn}/bookmarks`, {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //     })
+      //       .then((response) => {
+      //         if (response.ok) {
+      //           bookMarkButton.textContent = "즐겨찾기 제거";
+      //         } else if (response.status == 401) {
+      //           if (confirm("로그인이 필요 합니다.")) {
+      //             window.location.href = "/login";
+      //           }
+      //         }
+      //       })
+      //       .catch((error) => {
+      //         console.error("Error fetching books:", error);
+      //       });
+      //   } else if (bookMarkButton.textContent.trim() == "즐겨찾기 제거") {
+      //     fetch(`/api/books/${isbn}/bookmarks`, {
+      //       method: "DELETE",
+      //     })
+      //       .then((response) => {
+      //         if (response.ok) {
+      //           bookMarkButton.textContent = "즐겨찾기 추가";
+      //         } else if (response.status == 410) {
+      //           window.location.href = "/login";
+      //         }
+      //       })
+      //       .catch((error) => {
+      //         console.error("Error deleting review:", error);
+      //         alert("리뷰 삭제 중 오류가 발생했습니다.");
+      //       });
+      //   }
+      // });
       const url = new URL(window.location.href);
       const reviewList = document.getElementById("reviewList");
-
+      const bookMarkButton = document.getElementById("bookMarkButton");
       const isbn = url.pathname.split("/").pop();
 
       async function fetchData(url) {
         try {
           const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
           const data = await response.json();
+          if (!response.ok) {
+            handleFetchError(data);
+            return;
+          }
           return data;
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -125,15 +299,27 @@
         }
       }
 
+      function handleFetchError(data) {
+        if (data.code === 404) {
+          alert("잘못된 접근입니다.");
+          window.location.href = "/";
+        }
+      }
+
+      function updateElementById(id, content) {
+        const element = document.getElementById(id);
+        if (element) element.innerText = content;
+      }
+
       function displayBook(book) {
-        document.getElementById("isbn").innerText = book.isbn;
-        document.getElementById("title").innerText = book.title;
-        document.getElementById("author").innerText = book.author;
-        document.getElementById("publisher").innerText = book.publisher;
+        updateElementById("isbn", book.isbn);
+        updateElementById("title", book.title);
+        updateElementById("author", book.author);
+        updateElementById("publisher", book.publisher);
         document.getElementById("image").src = book.image;
-        document.getElementById("description").innerText = book.description;
-        document.getElementById("price").innerText = book.price;
-        document.getElementById("pubdate").innerText = book.pubdate;
+        updateElementById("description", book.description);
+        updateElementById("price", book.price);
+        updateElementById("pubdate", book.pubdate);
       }
 
       function displayReviews(reviews, member) {
@@ -143,49 +329,62 @@
         }
         reviews.forEach((review) => {
           const reviewLi = document.createElement("li");
-          reviewLi.innerHTML = `<li id="${review.id}" class="media">
-                      <div class="media-body">
-                        <strong class="text-success">${review.name}</strong>
-                        <span class="text-muted pull-right">
-                          <small class="text-muted">${review.writeDate}</small>
-                        </span>
-                        <p style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">${review.text}</p>
-                        <div>
-                          <button
-                            type="submit"
-                            class="btn btn-info pull-right deleteBtn"
-                          >
-                            삭제
-                          </button>
-                        </div>
-                      </div>
-                    </li>`;
-
+          reviewLi.id = review.id;
+          reviewLi.className = "media";
+          reviewLi.innerHTML = `
+            <div class="media-body">
+                <strong class="text-success">${review.name}</strong>
+                <span class="text-muted pull-right">
+                    <small class="text-muted">${review.writeDate}</small>
+                </span>
+                <p style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">${review.text}</p>
+                <div>
+                    <button type="submit" class="btn btn-info pull-right deleteBtn">삭제</button>
+                </div>
+            </div>`;
           reviewList.appendChild(reviewLi);
-          const deleteButtons = document.querySelectorAll(".deleteBtn");
-          const lastDeleteButton = deleteButtons[deleteButtons.length - 1];
-          if (review.loginId != member.loginId) {
-            lastDeleteButton.classList.add("hidden");
+
+          const deleteButton = reviewLi.querySelector(".deleteBtn");
+          if (review.loginId !== member.loginId) {
+            deleteButton.classList.add("hidden");
           }
         });
+      }
+
+      function updateBookMarkButton(bookMarked) {
+        bookMarkButton.textContent = bookMarked
+          ? "즐겨찾기 제거"
+          : "즐겨찾기 추가";
+      }
+
+      async function handleBookMarkAction(method, successMessage) {
+        try {
+          const response = await fetch(`/api/books/${isbn}/bookmarks`, {
+            method,
+          });
+          if (response.ok) {
+            updateBookMarkButton(method === "POST");
+          } else if (response.status === 401) {
+            if (confirm("로그인이 필요 합니다.")) {
+              window.location.href = "/login";
+            }
+          }
+        } catch (error) {
+          console.error(successMessage + " 중 오류가 발생했습니다.", error);
+        }
       }
 
       function reviewSave() {
         const text = document.getElementById("review").value.trim();
         fetch(`/api/books/${isbn}/reviews`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ isbn, text }),
         })
-          .then((response) => response.json())
-          .then((data) => {
-            window.location.reload();
-          })
-          .catch((error) => {
-            console.error("Error fetching books:", error);
-          });
+          .then(() => window.location.reload())
+          .catch((error) =>
+            console.error("리뷰 저장 중 오류가 발생했습니다.", error)
+          );
       }
 
       async function render() {
@@ -193,47 +392,56 @@
         const reviewDataUrl = `/api/books/${isbn}/reviews`;
         const loginMemberUrl = `/api/members`;
         const bookMarkUrl = `/api/books/${isbn}/bookmarks`;
+
         try {
-          const member = await fetchData(loginMemberUrl);
-          const book = await fetchData(bookDataUrl);
-          const reviews = await fetchData(reviewDataUrl);
-          const bookMark = await fetchData(bookMarkUrl);
-          // 책 정보와 리뷰 정보를 표시
+          const [member, book, reviews, bookMark] = await Promise.all([
+            fetchData(loginMemberUrl),
+            fetchData(bookDataUrl),
+            fetchData(reviewDataUrl),
+            fetchData(bookMarkUrl),
+          ]);
+
           displayBook(book);
           displayReviews(reviews, member);
-          displayBookMark(bookMark);
+          updateBookMarkButton(bookMark.message === "true");
         } catch (error) {
-          console.error("Error fetching book details:", error);
+          console.error("데이터 렌더링 중 오류가 발생했습니다.", error);
         }
       }
 
       render();
 
-      const addReview = document.getElementById("addReview");
-      if (addReview != null) {
-        addReview.addEventListener("click", reviewSave);
-      }
+      document
+        .getElementById("addReview")
+        ?.addEventListener("click", reviewSave);
 
       reviewList.addEventListener("click", function (event) {
         if (event.target.classList.contains("deleteBtn")) {
           const reviewItem = event.target.closest(".media");
           const reviewId = reviewItem.id;
-          console.log(reviewId);
           if (confirm("정말로 이 리뷰를 삭제하시겠습니까?")) {
             fetch(`/api/books/${isbn}/reviews/${reviewId}`, {
               method: "DELETE",
             })
               .then((response) => response.json())
               .then((data) => {
-                alert(data.msg);
+                alert(data.message);
                 window.location.reload();
               })
               .catch((error) => {
-                console.error("Error deleting review:", error);
+                console.error("리뷰 삭제 중 오류가 발생했습니다.", error);
                 alert("리뷰 삭제 중 오류가 발생했습니다.");
               });
           }
         }
+      });
+
+      bookMarkButton.addEventListener("click", function () {
+        const isAdding = bookMarkButton.textContent.trim() === "즐겨찾기 추가";
+        handleBookMarkAction(
+          isAdding ? "POST" : "DELETE",
+          isAdding ? "즐겨찾기 추가" : "즐겨찾기 제거"
+        );
       });
     </script>
   </html>

@@ -24,14 +24,8 @@ public class TestDateInit {
     @PostConstruct
     public void testDataAdd() {
 
-        Member member = new Member();
-        member.setLoginId("thesting31");
-        member.setName("정현모");
-        member.setPassword(bCryptPasswordEncoder.encode("31"));
-        member.setCity("전주");
-        member.setJoinDate(LocalDateTime.now());
-        member.setRole(Role.USER);
-
+        Member member = new Member(bCryptPasswordEncoder.encode("31"),
+                "thesting31", Role.USER, "정현모", "전주");
         memberRepository.save(member);
     }
 }

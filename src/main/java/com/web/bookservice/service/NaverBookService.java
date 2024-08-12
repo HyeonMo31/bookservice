@@ -78,15 +78,14 @@ public class NaverBookService {
                 item.setPubdate(date);
 
                 response.getItems().add(item);
-                Book book = new Book();
-                book.setTitle(itemNode.get("title").asText());
-                book.setPrice(itemNode.get("discount").asInt());
-                book.setAuthor(itemNode.get("author").asText());
-                book.setDescription(itemNode.get("description").asText());
-                book.setPublisher(itemNode.get("publisher").asText());
-                book.setImage(itemNode.get("image").asText());
-                book.setIsbn(itemNode.get("isbn").asText());
-                book.setPubdate(date);
+                Book book = new Book(itemNode.get("title").asText(),
+                        itemNode.get("image").asText(),
+                        itemNode.get("author").asText(),
+                        itemNode.get("discount").asInt(),
+                        itemNode.get("publisher").asText(),
+                        date,
+                        itemNode.get("isbn").asText(),
+                        itemNode.get("description").asText());
 
                 if(!repository.existsByIsbn(book.getIsbn())) {
                     repository.save(book);

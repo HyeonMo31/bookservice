@@ -1,15 +1,16 @@
 package com.web.bookservice.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
+@EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review {
 
     @Id
@@ -24,8 +25,14 @@ public class Review {
     @JoinColumn(name ="book_id")
     private Book book;
 
-    private LocalDateTime writeDate;
+    @CreatedDate
+    private LocalDateTime createdDate;
+
     private String text;
 
-
+    public Review(Member member, Book book, String text) {
+        this.member = member;
+        this.book = book;
+        this.text = text;
+    }
 }

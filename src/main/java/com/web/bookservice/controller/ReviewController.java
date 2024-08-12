@@ -34,7 +34,7 @@ public class ReviewController {
     public ResponseEntity<ReviewCommentResponseDto> addReview(@PathVariable("isbn")String isbn,
                                                               @RequestBody ReviewRequestDto request,
                                                               @AuthenticationPrincipal CustomMemberDetails member) {
-        return ResponseEntity.ok(reviewService.save(isbn, request, member.getUsername()));
+        return ResponseEntity.ok(reviewService.save(isbn, request, member));
     }
 
     /**
@@ -44,7 +44,7 @@ public class ReviewController {
     public ResponseEntity<ResponseCodeDto> deleteReview(@PathVariable("isbn")String isbn,
                                                         @PathVariable("reviewId")Long reviewId,
                                                         @AuthenticationPrincipal CustomMemberDetails member) {
-        return ResponseEntity.ok(reviewService.deleteReview(isbn, reviewId, member.getUsername()));
+        return ResponseEntity.ok(reviewService.deleteReview(isbn, reviewId, member));
     }
 
 

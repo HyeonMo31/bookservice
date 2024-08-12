@@ -2,9 +2,7 @@ package com.web.bookservice.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,7 +11,8 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Getter @Setter
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Book {
 
     @Id
@@ -32,12 +31,14 @@ public class Book {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-
-
-
-
-
-
-
-
+    public Book(String title, String image, String author, int price, String publisher, LocalDate pubdate, String isbn, String description) {
+        this.title = title;
+        this.image = image;
+        this.author = author;
+        this.price = price;
+        this.publisher = publisher;
+        this.pubdate = pubdate;
+        this.isbn = isbn;
+        this.description = description;
+    }
 }
