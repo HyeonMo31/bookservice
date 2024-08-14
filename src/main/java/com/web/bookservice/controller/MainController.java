@@ -29,4 +29,9 @@ public class MainController {
     public String searchBook() {
         return "search/book";
     }
+
+    @GetMapping("/post/list")
+    public String postListPage() {
+        return "post/postList";
+    }
 }

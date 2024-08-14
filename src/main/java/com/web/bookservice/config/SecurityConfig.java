@@ -25,7 +25,7 @@ public class SecurityConfig {
                         //누구나 접근
                         .requestMatchers("/css/**", "/img/**", "/join", "/error").permitAll()
 
-                        .requestMatchers("/", "/login", "/search", "/search/**",
+                        .requestMatchers("/", "/login", "/search", "/search/**", "/post/**",
                                 "/api/**", "/swagger-ui/**", "/v3/api-docs/**", "/api*", "/api/logistics").permitAll()
                         //로그인한 사용자 누구나 접근
                         //역할에 따라 접근 (로그인 필요)

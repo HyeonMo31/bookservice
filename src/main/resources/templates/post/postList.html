@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+</head>
+<body>
+
+<div class="container heightCal">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div class="container">
+        <div class="main-body p-0">
+            <div class="inner-wrapper">
+                <!-- Inner sidebar -->
+                <div class="inner-sidebar">
+                    <!-- Inner sidebar header -->
+                    <div class="inner-sidebar-header justify-content-center">
+                        <button th:onclick="|location.href='@{/discussion/add}'|" class="btn btn-primary has-icon btn-block" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus mr-2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            글 작성
+                        </button>
+                    </div>
+                    <!-- /Inner sidebar header -->
+
+                    <!-- Inner sidebar body -->
+                    <div class="inner-sidebar-body p-0">
+                        <div class="p-3 h-100" data-simplebar="init">
+                            <div class="simplebar-wrapper" style="margin: -16px;">
+                                <div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div>
+                                <div class="simplebar-mask">
+                                    <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
+                                        <div class="simplebar-content-wrapper" style="height: 100%; overflow: hidden;">
+                                            <div class="simplebar-content" style="padding: 16px;">
+                                                <nav class="nav nav-pills nav-gap-y-1 flex-column">
+                                                    <a th:href="@{/discussion/list}" class="nav-link nav-link-faded has-icon" th:classappend="${param.myDiscussion == null} ? 'active' : ''">All</a>
+                                                    <a th:href="@{/discussion/myList}" class="nav-link nav-link-faded has-icon" th:classappend="${param.myDiscussion != null and not param.myDiscussion.isEmpty()} ? 'active' : ''">My Discussion</a>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--                                <div class="simplebar-placeholder" style="width: 234px; height: 292px;"></div>-->
+                            </div>
+                            <!--                            <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div>-->
+                            <!--                            <div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 151px; display: block; transform: translate3d(0px, 0px, 0px);"></div></div>-->
+                        </div>
+                    </div>
+                    <!-- /Inner sidebar body -->
+                </div>
+                <!-- /Inner sidebar -->
+
+                <!-- Inner main -->
+                <div class="inner-main">
+                    <!-- Inner main header -->
+                    <div class="inner-main-header">
+                        <select class="form-select form-select-sm w-auto mr-1">
+                            <option selected="">Latest</option>
+                            <option value="1">Popular</option>
+                            <option value="3">Solved</option>
+                            <option value="3">Unsolved</option>
+                            <option value="3">No Replies Yet</option>
+                        </select>
+                        <form class="d-flex align-items-center" th:action="@{/discussion/list}" method="get">
+                            <select id="select" name="select" class="form-select form-select-sm me-1" style="width: 90px">
+                                <option value="postTitle" selected="">제목</option>
+                                <option value="bookTitle">책이름</option>
+                                <option value="writer">작성자</option>
+                            </select>
+                            <!--                            <span class="input-icon input-icon-sm ml-auto w-auto">-->
+                            <!--                                <input type="text" class="form-control form-control-sm bg-gray-200 border-gray-200 shadow-none mb-4 mt-4" placeholder="Search forum" />-->
+                            <!--                             </span>-->
+                            <div class="input-group input-icon input-icon-sm ml-auto w-auto">
+                                <input name="query" type="text" class="form-control form-control-sm bg-gray-200 border-gray-200 shadow-none mb-4 mt-4" placeholder="Search forum" />
+                                <div class="d-flex input-group-prepend align-items-center">
+                                    <button type="submit" class="btn btn-link text-primary border-top border-end border-bottom"><i class="bi bi-search"></i></button>
+                                </div>
+                            </div>
+                            <input th:if="${param.myDiscussion != null and not param.myDiscussion.isEmpty()}" type="hidden" name="myDiscussion" th:value="${param.myDiscussion}" />
+                        </form>
+
+                    </div>
+                    <!-- /Inner main header -->
+
+                    <!-- Inner main body -->
+
+                    <div class="container ms-2 my-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <h5 class="card-title">Contact List <span th:text="'(' + ${totalSize} + ')'" class="text-muted fw-normal ms-2">사이즈.</span></h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="">
+                                    <div class="table-responsive">
+                                        <table class="table project-list-table table-nowrap align-middle table-borderless">
+                                            <thead>
+                                            <tr class="text-center">
+                                                <th scope="col" class="ps-4" style="width: 50px;">
+                                                    <!--                                                    <div class="form-check font-size-16"><input type="checkbox" class="form-check-input" id="contacusercheck" /><label class="form-check-label" for="contacusercheck"></label></div>-->
+                                                    Id
+                                                </th>
+                                                <th scope="col">제목</th>
+                                                <th scope="col">책 이름</th>
+                                                <th scope="col">작성자</th>
+                                                <th scope="col">작성일</th>
+                                                <th scope="col">조회수</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="text-center" th:each="discussion : ${discussions}">
+                                                <th scope="row" class="ps-4">
+                                                    <!--                                                    <div class="form-check font-size-16"><input type="checkbox" class="form-check-input" id="contacusercheck9" /><label class="form-check-label" for="contacusercheck9"></label></div>-->
+                                                    <div th:text="${discussion.id}"></div>
+                                                </th>
+                                                <td> <a th:href="@{/discussion/post/{id}(id=${discussion.id})}"
+                                                        th:text="${discussion.title}" class="text-body">제목</a> <span th:if="${discussion.comments.size > 0}" th:text="'(' +${discussion.comments.size} + ')'"></span></td>
+                                                <td><a th:href="@{/search/book/{isbn}(isbn=${discussion.book.isbn})}">
+                                                    <span th:text="${discussion.book.title}" class="badge badge-soft-success mb-0">책 이름</span></a>
+                                                </td>
+                                                <td><span th:text="${discussion.member.name}"></span></td>
+                                                <td><span th:text="${discussion.writeDate}"></span></td>
+                                                <td> <span>1</span> </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-0 align-items-center pb-4">
+                            <div class="col-sm-6">
+                                <div><p class="mb-sm-0">
+                                    Showing
+                                    <span th:text="${start}"/>
+                                    to
+                                    <span th:text="${end}"/>
+                                    of
+                                    <span th:text="${totalSize}"/>
+                                    entries
+                                </p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="float-sm-end">
+                                    <ul class="pagination mb-sm-0">
+                                        <li class="page-item disabled">
+                                            <a href="#" class="page-link"><i class="bi bi-chevron-double-left"></i></a>
+                                        </li>
+                                        <li th:if="${pageCount > 0}" th:each="pageNum : ${#numbers.sequence(0, pageCount-1)}" >
+                                            <form th:href="@{/discussion/list}" th:class="${pageNum == currentPage} ? 'page-item active' : 'page-item'" >
+                                                <button type="submit" class="page-link"  th:text="${pageNum+1}"/>
+                                                <input th:if="${param.select != null and not param.select.isEmpty()}" type="hidden" name="select" th:value="${param.select}" />
+                                                <input th:if="${param.query != null and not param.query.isEmpty()}" type="hidden" name="query" th:value="${param.query}" />
+                                                <input th:if="${param.myDiscussion != null and not param.myDiscussion.isEmpty()}" type="hidden" name="myDiscussion" th:value="${param.myDiscussion}" />
+                                                <input type="hidden" name="page" th:value="${pageNum}" />
+                                            </form>
+                                            </a>
+
+                                        </li>
+                                        <a href="#" class="page-link"><i class="bi bi-chevron-double-right"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Inner main body -->
+                </div>
+                <!-- /Inner main -->
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+<script>
+
+
+
+
+</script>
+</html>

@@ -13,12 +13,14 @@ import com.web.bookservice.repository.BookRepository;
 import com.web.bookservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.naming.AuthenticationException;
 
 import static com.web.bookservice.exception.ErrorMessage.*;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class BookMarkService {
 
@@ -56,7 +58,6 @@ public class BookMarkService {
         Member findMember = memberRepository.findByLoginId(member.getUsername());
 
         Bookmark bookmark = new Bookmark(findBook, findMember);
-
 
         bookMarkRepository.save(bookmark);
 

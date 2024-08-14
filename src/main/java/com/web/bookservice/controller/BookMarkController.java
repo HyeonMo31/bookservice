@@ -4,12 +4,14 @@ import com.web.bookservice.dto.CustomMemberDetails;
 import com.web.bookservice.dto.ResponseCodeDto;
 import com.web.bookservice.service.BookMarkService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class BookMarkController {
 
     private final BookMarkService bookMarkService;
@@ -29,7 +31,6 @@ public class BookMarkController {
     @PostMapping("/api/books/{isbn}/bookmarks")
     public ResponseEntity<ResponseCodeDto> addBookMark(@PathVariable("isbn")String isbn,
                                                        @AuthenticationPrincipal CustomMemberDetails member) {
-
         return ResponseEntity.ok(bookMarkService.addBookMark(isbn, member));
     }
 

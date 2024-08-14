@@ -358,6 +358,7 @@
       }
 
       async function handleBookMarkAction(method, successMessage) {
+        console.log(method);
         try {
           const response = await fetch(`/api/books/${isbn}/bookmarks`, {
             method,

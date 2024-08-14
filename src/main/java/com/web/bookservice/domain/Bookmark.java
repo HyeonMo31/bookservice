@@ -28,7 +28,7 @@ public class Bookmark {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    public Bookmark(Book Book, Member Member) {
+    public Bookmark(Book book, Member member) {
         this.book = book;
         this.member = member;
     }
