@@ -36,7 +36,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         post.title,
                         book.title,
                         member.name,
-                        post.createdBy))
+                        post.createdDate))
                 .from(post)
                 .leftJoin(post.book, book)
                 .leftJoin(post.member, member)
@@ -54,12 +54,12 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
 
     private OrderSpecifier<?> sortPost(String orderBy) {
         if(isEmpty(orderBy) || orderBy.equals("asc"))
-            return post.createdBy.asc();
+            return post.createdDate.asc();
         else if (orderBy.equals("desc")) {
-            return post.createdBy.desc();
+            return post.createdDate.desc();
         }
 
-        return post.createdBy.asc();
+        return post.createdDate.asc();
     }
     private BooleanExpression isMy(String loginId) {
         return isEmpty(loginId) ? null : member.loginId.eq(loginId);

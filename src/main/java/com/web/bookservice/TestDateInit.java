@@ -39,7 +39,7 @@ public class TestDateInit {
         memberRepository.save(member2);
 
 
-        for(int i = 0; i < 6; i++) {
+        for(int i = 0; i < 12; i++) {
             Book book = createBook(i);
             bookRepository.save(book);
             Post post = new Post(member, book, "테스트 게시판 제목입니다." + i,
@@ -47,7 +47,7 @@ public class TestDateInit {
             postRepository.save(post);
         }
 
-        for(int i = 6; i < 12; i++) {
+        for(int i = 12; i < 24; i++) {
             Book book = createBook(i);
             bookRepository.save(book);
             Post post = new Post(member2, book, "테스트 게시판 제목입니다." + i,

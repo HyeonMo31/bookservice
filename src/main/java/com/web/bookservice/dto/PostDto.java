@@ -14,14 +14,14 @@ public class PostDto {
     private String postTitle;
     private String bookTitle;
     private String writer;
-    private LocalDateTime createdBy;
+    private LocalDateTime createdDate;
 
     @QueryProjection
-    public PostDto(Long id, String postTitle, String bookTitle, String writer, LocalDateTime createdBy) {
+    public PostDto(Long id, String postTitle, String bookTitle, String writer, LocalDateTime createdDate) {
         this.id = id;
         this.postTitle = postTitle;
         this.bookTitle = bookTitle;
         this.writer = writer;
-        this.createdBy = createdBy;
+        this.createdDate = createdDate;
     }
 }

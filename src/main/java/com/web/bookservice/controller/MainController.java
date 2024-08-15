@@ -30,8 +30,9 @@ public class MainController {
         return "search/book";
     }
 
-    @GetMapping("/post/list")
+    @GetMapping("/post")
     public String postListPage() {
+        log.info("Post GetMapping 들어와라 씹");
         return "post/postList";
     }
 }

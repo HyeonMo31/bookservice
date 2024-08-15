@@ -4,6 +4,7 @@ import com.web.bookservice.dto.CustomMemberDetails;
 import com.web.bookservice.dto.PostSearchCondition;
 import com.web.bookservice.service.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class PostController {
 
     private final PostService postService;
@@ -28,6 +30,7 @@ public class PostController {
                                                PostSearchCondition condition,
                                                @AuthenticationPrincipal CustomMemberDetails member,
                                                PagedResourcesAssembler assembler) {
+        log.info("SearchCondition = {}", condition);
         return ResponseEntity.ok(assembler.toModel(postService.findAll(condition, pageable, member)));
     }
 }

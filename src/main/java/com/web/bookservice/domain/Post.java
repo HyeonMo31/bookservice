@@ -36,7 +36,7 @@ public class Post {
     private String text;
 
     @CreatedDate
-    private LocalDateTime createdBy;
+    private LocalDateTime createdDate;
 
     public Post(Member member, Book book, String title, String text) {
         this.member = member;
