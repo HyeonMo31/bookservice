@@ -1,5 +1,6 @@
 package com.web.bookservice.controller;
 
+import com.web.bookservice.dto.BookMarksDto;
 import com.web.bookservice.dto.CustomMemberDetails;
 import com.web.bookservice.dto.ResponseCodeDto;
 import com.web.bookservice.service.BookMarkService;
@@ -17,12 +18,20 @@ public class BookMarkController {
     private final BookMarkService bookMarkService;
 
     /**
+     * 즐겨찾기 멤버 리스트 조회
+     */
+    @GetMapping("/api/bookmarks")
+    public ResponseEntity<BookMarksDto> findMemberBookMark(@AuthenticationPrincipal CustomMemberDetails member) {
+        return ResponseEntity.ok(bookMarkService.findMemberBookMarks(member));
+    }
+
+    /**
      * 즐겨찾기 여부 조회
      */
     @GetMapping("/api/books/{isbn}/bookmarks")
     public ResponseEntity<ResponseCodeDto> findBookMark(@PathVariable("isbn")String isbn,
                                        @AuthenticationPrincipal CustomMemberDetails member) {
-        return ResponseEntity.ok(bookMarkService.findBookMark(isbn, member));
+        return ResponseEntity.ok(bookMarkService.isBookMarked(isbn, member));
     }
 
     /**

@@ -27,12 +27,20 @@ public class MainController {
 
     @GetMapping("/search/book/{isbn}")
     public String searchBook() {
+        System.out.println("/search/book/${isbn}");
         return "search/book";
     }
-
     @GetMapping("/post")
     public String postListPage() {
-        log.info("Post GetMapping 들어와라 씹");
         return "post/postList";
     }
+
+    @GetMapping("post/add")
+    public String postAddPage(){
+        return "post/addForm";
+    }
+
+    @GetMapping("post/{id}")
+    public String postDetailPage() {return "post/post";}
+
 }

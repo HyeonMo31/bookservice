@@ -1,5 +1,6 @@
 package com.web.bookservice.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +19,14 @@ public class BookDto {
     private String isbn;
     private String description;
 
+    public BookDto() {}
 
-
+    @QueryProjection
+    public BookDto(String title, String image, String author, LocalDate pubdate, String isbn) {
+        this.title = title;
+        this.image = image;
+        this.author = author;
+        this.pubdate = pubdate;
+        this.isbn = isbn;
+    }
 }

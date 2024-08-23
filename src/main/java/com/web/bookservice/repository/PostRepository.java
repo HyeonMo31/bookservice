@@ -1,7 +1,6 @@
 package com.web.bookservice.repository;
 
 import com.web.bookservice.domain.Post;
-import com.web.bookservice.dto.PostDto;
 import com.web.bookservice.repository.querydsl.PostRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 

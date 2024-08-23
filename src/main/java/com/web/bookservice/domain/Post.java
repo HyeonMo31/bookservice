@@ -8,6 +8,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,13 +27,13 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
-    @NotNull(message = "책을 필수로 선택하십시오.")
+//    @NotNull(message = "책을 필수로 선택하십시오.")
     private Book book;
 
-    @NotBlank(message = "제목을 입력해 주세요.")
+//    @NotBlank(message = "제목을 입력해 주세요.")
     private String title;
 
-    @NotBlank(message = "텍스트를 입력해주세요.")
+//    @NotBlank(message = "텍스트를 입력해주세요.")
     @Column(columnDefinition = "TEXT")
     private String text;
 
@@ -45,7 +47,7 @@ public class Post {
         this.text = text;
     }
 
-    //    @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL)
-//    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
 
 }

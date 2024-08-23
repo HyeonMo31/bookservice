@@ -25,4 +25,5 @@ server:
   servlet:
     session:
       tracking-modes: cookie
+      timeout : 10
 #세션 정보가 url에 노출되지 않도록

@@ -3,10 +3,10 @@ package com.web.bookservice.service;
 import com.web.bookservice.domain.Book;
 import com.web.bookservice.domain.Bookmark;
 import com.web.bookservice.domain.Member;
+import com.web.bookservice.dto.BookMarksDto;
 import com.web.bookservice.dto.CustomMemberDetails;
 import com.web.bookservice.dto.ResponseCodeDto;
 import com.web.bookservice.exception.BookNotFoundException;
-import com.web.bookservice.exception.ErrorMessage;
 import com.web.bookservice.exception.MemberNotAuthenticatedException;
 import com.web.bookservice.repository.BookMarkRepository;
 import com.web.bookservice.repository.BookRepository;
@@ -14,8 +14,6 @@ import com.web.bookservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.naming.AuthenticationException;
 
 import static com.web.bookservice.exception.ErrorMessage.*;
 
@@ -28,7 +26,18 @@ public class BookMarkService {
     private final MemberRepository memberRepository;
     private final BookMarkRepository bookMarkRepository;
 
-    public ResponseCodeDto findBookMark(String isbn, CustomMemberDetails member) {
+    public BookMarksDto findMemberBookMarks(CustomMemberDetails member) {
+
+        if(member == null)
+            throw new MemberNotAuthenticatedException("로그인 되어 있지 않습니다.");
+
+        Member findMember = memberRepository.findByLoginId(member.getUsername());
+        return new BookMarksDto(findMember.getLoginId(), findMember.getName(),
+                bookMarkRepository.findByMember(findMember));
+
+    }
+
+    public ResponseCodeDto isBookMarked(String isbn, CustomMemberDetails member) {
 
         Book findBook = bookRepository.findByIsbn(isbn);
 
