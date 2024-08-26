@@ -38,7 +38,7 @@ public class TestDateInit {
         memberRepository.save(member2);
 
         for(int i = 1; i <= 14; i++) {
-            naverBookService.searchBooks("정보처리기사", i, "sim");
+            naverBookService.searchBooks("요리", i, "sim");
         }
 
         // Save posts and bookmarks for the first range of books
@@ -53,8 +53,8 @@ public class TestDateInit {
             Post post = new Post(member, book, book.getTitle() + "이란 무엇일까", book.getDescription());
             postRepository.save(post);
             bookMarkRepository.save(new Bookmark(book, member));
-            commentRepository.save(new Comment(post, member, "아오"));
-            commentRepository.save(new Comment(post, member2, "아오"));
+            commentRepository.save(new Comment(post, member, "재밌는 글입니다."));
+            commentRepository.save(new Comment(post, member2, "재미없는 글입니다. 후후"));
         }
 
         // Save posts and bookmarks for the second range of books

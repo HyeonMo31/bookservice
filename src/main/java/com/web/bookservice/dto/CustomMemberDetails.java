@@ -31,6 +31,10 @@ public class CustomMemberDetails implements UserDetails {
         return collection;
     }
 
+    public Member getMember() {
+        return this.member;
+    }
+
     //db 구현을 하지 않아서 기본적으로 true
     @Override
     public boolean isAccountNonExpired() {

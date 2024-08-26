@@ -1,7 +1,10 @@
 package com.web.bookservice.controller;
 
+import com.web.bookservice.dto.CustomMemberDetails;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,12 +38,26 @@ public class MainController {
         return "post/postList";
     }
 
-    @GetMapping("post/add")
+    @GetMapping("/post/add")
     public String postAddPage(){
         return "post/addForm";
     }
 
-    @GetMapping("post/{id}")
+    @GetMapping("/post/{id}")
     public String postDetailPage() {return "post/post";}
+
+    @GetMapping("/post/update/{id}")
+    public String postUpdatePage() {return "post/editForm";}
+
+    @GetMapping("/my-page")
+    public String myPage() {
+
+        return "user/my-page";
+    }
+
+    @GetMapping("/my-page/bookmarks")
+    public String my_bookmarksPage() {
+        return "user/myBookmarks";
+    }
 
 }

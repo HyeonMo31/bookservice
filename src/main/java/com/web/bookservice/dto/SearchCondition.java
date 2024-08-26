@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @Getter @Setter
 @ToString
-public class PostSearchCondition {
+public class SearchCondition {
 
     private String select;
     private String query;

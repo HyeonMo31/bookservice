@@ -60,7 +60,14 @@
                       <span class="field-error" />
                       <!--                  <input type="text" name="subject" class="form-control" placeholder="Subject" required="required" style="background: #eee;">-->
                       <select id="select" class="form-select form-select-sm">
-                        <option value="null">책 선택.</option>
+                        <option
+                          selected
+                          disabled
+                          id="defaultOption"
+                          value="null"
+                        >
+                          책 선택.
+                        </option>
                       </select>
                     </div>
 
@@ -104,22 +111,11 @@
     <div th:replace="fragments/footer :: footer"></div>
   </body>
   <script>
-    let loginId;
+    let postLoginId;
+    const url = new URL(window.location.href);
+    const postId = url.pathname.split("/").pop();
 
-    fetch(`/api/members`, {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((member) => {
-        document.getElementById("name").value = member.name;
-        document.getElementById("loginId").value = member.loginId;
-        member = data.loginId;
-      })
-      .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
-      });
-
-    fetch(`/api/bookmarks`, {
+    fetch(`/api/post/${postId}`, {
       method: "GET",
     })
       .then((response) => {
@@ -134,14 +130,24 @@
         return response.json();
       })
       .then((data) => {
-        const selectElement = document.getElementById("select");
-
-        data.forEach((book) => {
-          option = document.createElement("option");
-          option.value = book.isbn;
-          option.textContent = book.title;
-          selectElement.appendChild(option);
-        });
+        document.getElementById("name").value = data.name;
+        document.getElementById("loginId").value = data.loginId;
+        document.getElementById("title").value = data.postTitle;
+        document.getElementById("text").value = data.text;
+        document.getElementById("defaultOption").value = data.bookInfo.isbn;
+        document.getElementById("defaultOption").textContent =
+          data.bookInfo.bookTitle;
+        return data.loginId; // postLoginId를 반환
+      })
+      .then((postLoginId) => {
+        return fetch(`/api/members`)
+          .then((response) => response.json())
+          .then((member) => {
+            if (member.loginId != postLoginId || member.loginId == null) {
+              alert("잘못된 접근입니다.");
+              history.back();
+            }
+          });
       })
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);
@@ -151,17 +157,10 @@
       .getElementById("addForm")
       .addEventListener("submit", function (event) {
         event.preventDefault();
-        name = document.getElementById("name").value;
+
         const title = document.getElementById("title").value;
         const text = document.getElementById("text").value;
         const isbn = document.getElementById("select").value;
-
-        if (isbn === "null") {
-          alert(
-            "책 선택은 필수 입니다. 책이 없다면 즐겨찾기 추가하고 오십시오"
-          );
-          return;
-        }
 
         if (title.length === 0 || text.length === 0) {
           alert("제목과 내용은 비어있으면 안됩니다.");
@@ -169,20 +168,28 @@
         }
 
         fetch(`/api/post`, {
-          method: "POST",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ id: -1, loginId, isbn, title, text }),
+          body: JSON.stringify({
+            id: postId,
+            loginId: postLoginId,
+            isbn: isbn,
+            title: title,
+            text: text,
+          }),
         })
           .then((response) => {
             return response.json().then((data) => {
               if (response.ok) {
-                window.location.replace("/post/" + data.message);
-              } else {
+                window.location.replace("/post/" + postId);
+              } else if (response.status == 401) {
                 window.location.href = "/login";
-                alert(data.message);
+              } else if (response.status == 404) {
+                window.location.href = "/";
               }
+              alert(data.message);
             });
           })
           .catch((error) => alert(error.message));

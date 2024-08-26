@@ -8,14 +8,18 @@ import com.web.bookservice.dto.MemberResponseDto;
 import com.web.bookservice.dto.ResponseCodeDto;
 import com.web.bookservice.exception.ErrorMessage;
 import com.web.bookservice.exception.MemberNotAuthenticatedException;
+import com.web.bookservice.exception.PasswordBadRequestException;
 import com.web.bookservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.security.sasl.AuthenticationException;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Optional;
 
 import static com.web.bookservice.exception.ErrorMessage.*;
 
@@ -49,9 +53,24 @@ public class MemberService {
 
         Member findMember = memberRepository.findByLoginId(member.getUsername());
 
-        return new MemberResponseDto(findMember.getName(), findMember.getLoginId(),
-                findMember.getCity(), findMember.getCreatedDate());
+        return new MemberResponseDto(findMember);
 
+    }
+
+    public MemberResponseDto updateMember(JoinDto joinDto, CustomMemberDetails member){
+
+        if(member == null)
+            throw new MemberNotAuthenticatedException("로그인 되어 있지 않습니다.");
+
+        Member findMember = memberRepository.findByLoginId(member.getUsername());
+
+        if(!bCryptPasswordEncoder.matches(joinDto.getPassword(), findMember.getPassword())) {
+            throw new PasswordBadRequestException();
+        }
+
+        findMember.updateMember(joinDto);
+
+        return new MemberResponseDto(findMember);
     }
 
 

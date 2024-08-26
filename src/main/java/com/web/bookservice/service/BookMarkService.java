@@ -3,17 +3,19 @@ package com.web.bookservice.service;
 import com.web.bookservice.domain.Book;
 import com.web.bookservice.domain.Bookmark;
 import com.web.bookservice.domain.Member;
-import com.web.bookservice.dto.BookMarksDto;
-import com.web.bookservice.dto.CustomMemberDetails;
-import com.web.bookservice.dto.ResponseCodeDto;
+import com.web.bookservice.dto.*;
 import com.web.bookservice.exception.BookNotFoundException;
 import com.web.bookservice.exception.MemberNotAuthenticatedException;
 import com.web.bookservice.repository.BookMarkRepository;
 import com.web.bookservice.repository.BookRepository;
 import com.web.bookservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.web.bookservice.exception.ErrorMessage.*;
 
@@ -26,14 +28,14 @@ public class BookMarkService {
     private final MemberRepository memberRepository;
     private final BookMarkRepository bookMarkRepository;
 
-    public BookMarksDto findMemberBookMarks(CustomMemberDetails member) {
+    public List<BookmarkDto> findAll(CustomMemberDetails member) {
 
         if(member == null)
             throw new MemberNotAuthenticatedException("로그인 되어 있지 않습니다.");
 
         Member findMember = memberRepository.findByLoginId(member.getUsername());
-        return new BookMarksDto(findMember.getLoginId(), findMember.getName(),
-                bookMarkRepository.findByMember(findMember));
+
+        return bookMarkRepository.findAll(findMember.getLoginId());
 
     }
 
@@ -90,4 +92,7 @@ public class BookMarkService {
         return new ResponseCodeDto(200, "삭제 완료");
     }
 
+    public Page<BookmarkDto> findByPage(SearchCondition searchCondition, Pageable pageable, CustomMemberDetails member) {
+        return bookMarkRepository.findByPage(searchCondition, pageable, member.getUsername());
+    }
 }

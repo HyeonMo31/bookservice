@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body>
+<div class="container heightCal">
+  <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <div class="container padding-bottom-3x mb-2">
+    <div class="row">
+      <div class="col-lg-3">
+        <aside class="user-info-wrapper">
+          <div class="user-cover" style="background-image: url(https://bootdey.com/img/Content/bg1.jpg);">
+            <div class="info-label" data-toggle="tooltip" title="" data-original-title="You currently have 290 Reward Points to spend"><i class="icon-medal"></i>290 points</div>
+          </div>
+          <div class="user-info">
+            <div class="user-avatar">
+              <a class="edit-avatar" href="#"></a><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="User"></div>
+            <div class="user-data">
+              <h4 >이름</h4><span >Joined February 06, 2017</span>
+            </div>
+          </div>
+        </aside>
+        <nav class="list-group">
+          <a class="list-group-item" th:href="@{/my-page}"><i class="fa fa-user"></i>내 정보</a>
+          <a class="list-group-item  with-badge" th:href="@{/post?my=true}"><i class="fa fa-th"></i>토론 목록<span  class="badge badge-primary badge-pill"></span></a>
+          <a class="list-group-item active" active th:href="@{/my-page/bookmarks}"><i class="fa fa-map"></i>즐겨찾기 목록</a>
+          <!--                    <a class="list-group-item with-badge" href="#"><i class="fa fa-heart"></i>Wishlist<span class="badge badge-primary badge-pill">3</span></a>-->
+          <!--                    <a class="list-group-item with-badge active" href="#"><i class="fa fa-tag"></i>My Tickets<span class="badge badge-primary badge-pill">4</span></a>-->
+        </nav>
+      </div>
+      <div class="col-lg-9">
+        <div class="inner-main-header">
+          <div class="d-flex">
+            <select
+              id="orderBy"
+              class="form-select form-select-sm w-auto mr-1"
+            >
+            <option selected=""  value="createdDesc">추가 최신 순</option>
+            <option value="createdAsc">추가 오래된 순</option>
+              <option  value="pubDesc">출간 최신 순</option>
+              <option value="pubAsc">출간 오래된 순</option>
+
+            </select>
+            <h6 id="showing" class="fs-16 mb-0 p-1"></h6>
+          </div>
+          <form
+            class="d-flex align-items-center"
+            th:action="@{/my-page/bookmarks}"
+            method="get"
+          >
+            <select
+              id="select"
+              name="select"
+              class="form-select form-select-sm me-1"
+              style="width: 90px"
+            >
+              <option value="bookTitle">책이름</option>
+              <option value="author">
+                저자
+              </option>
+              <option value="isbn">
+                ISBN
+              </option>
+              <option value="publisher">
+                출판사
+              </option>
+            </select>
+            <!--                            <span class="input-icon input-icon-sm ml-auto w-auto">-->
+            <!--                                <input type="text" class="form-control form-control-sm bg-gray-200 border-gray-200 shadow-none mb-4 mt-4" placeholder="Search forum" />-->
+            <!--                             </span>-->
+            <div
+              class="input-group input-icon input-icon-sm ml-auto w-auto"
+            >
+              <input
+                id="query"
+                name="query"
+                type="search"
+                class="form-control form-control-sm bg-gray-200 border-gray-200 shadow-none mb-4 mt-4"
+                placeholder="Search forum"
+              />
+              <div class="d-flex input-group-prepend align-items-center">
+                <button
+                  type="submit"
+                  class="btn btn-link text-primary border-top border-end border-bottom"
+                >
+                  <i class="bi bi-search"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="container ms-2 my-3">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="">
+                <div class="table-responsive">
+                  <table class="table project-list-table table-nowrap align-middle table-borderless">
+                    <thead>
+                    <tr class="text-center">
+                      <th scope="col" class="ps-4" style="width: 50px;">
+                        <!--                                                    <div class="form-check font-size-16"><input type="checkbox" class="form-check-input" id="contacusercheck" /><label class="form-check-label" for="contacusercheck"></label></div>-->
+                        Id
+                      </th>
+                      <th scope="col">ISBN</th>
+                      <th scope="col">책 이름</th>
+                      <th scope="col">저자</th>
+                      <th scope="col">출판사</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="text-center" >
+                      <th scope="row" class="ps-4">
+                        <div >1</div>
+                      </th>
+                      <td> <a href=""
+                              class="text-body">123456789</a>
+                      <td><a href="">
+                        <span  class="badge badge-soft-success mb-0">책 이름ㄴㄴㄴㄴ</span></a>
+                      </td>
+                      <td><span >저자</span></td>
+                      <td><span>출판사</span></td>
+                    </tr>
+                    
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="mt-4 pt-2 col-lg-12">
+              <nav aria-label="Page navigation example">
+                <div
+                  id="pagination"
+                  class="pagination job-pagination mb-0 justify-content-center"
+                ></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+<script>
+  
+</script>
+</html>

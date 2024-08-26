@@ -6,9 +6,8 @@ import com.web.bookservice.domain.Review;
 import com.web.bookservice.dto.CustomMemberDetails;
 import com.web.bookservice.dto.ResponseCodeDto;
 import com.web.bookservice.dto.ReviewCommentResponseDto;
-import com.web.bookservice.dto.ReviewRequestDto;
+import com.web.bookservice.dto.ReviewCommentRequestDto;
 import com.web.bookservice.exception.BookNotFoundException;
-import com.web.bookservice.exception.ErrorMessage;
 import com.web.bookservice.exception.MemberNotAuthenticatedException;
 import com.web.bookservice.repository.BookRepository;
 import com.web.bookservice.repository.MemberRepository;
@@ -33,7 +32,7 @@ public class ReviewService {
     private final BookRepository bookRepository;
     private final MemberRepository memberRepository;
 
-    public ReviewCommentResponseDto save(String isbn, ReviewRequestDto request, CustomMemberDetails member) {
+    public ReviewCommentResponseDto save(String isbn, ReviewCommentRequestDto request, CustomMemberDetails member) {
 
         Book findBook = bookRepository.findByIsbn(isbn);
 

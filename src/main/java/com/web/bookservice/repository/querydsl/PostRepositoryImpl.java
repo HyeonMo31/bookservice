@@ -5,7 +5,6 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.web.bookservice.domain.Post;
 import com.web.bookservice.dto.*;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
@@ -41,6 +40,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         PostDto postDto = (PostDto) queryFactory
                 .select(Projections.constructor(
                         PostDto.class,
+                        post.id,
                         member.name,
                         member.loginId,
                         post.createdDate,
@@ -81,7 +81,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
     }
 
     @Override
-    public Page<PostPagingDto> findPostList(PostSearchCondition condition, Pageable pageable,
+    public Page<PostPagingDto> findPostList(SearchCondition condition, Pageable pageable,
                                             String loginId) {
 
         QueryResults<PostPagingDto> results = queryFactory

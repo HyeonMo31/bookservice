@@ -4,7 +4,6 @@ import com.web.bookservice.domain.Book;
 import com.web.bookservice.domain.Member;
 import com.web.bookservice.domain.Post;
 import com.web.bookservice.dto.*;
-import com.web.bookservice.exception.BookNotFoundException;
 import com.web.bookservice.exception.MemberNotAuthenticatedException;
 import com.web.bookservice.exception.PostNotFoundException;
 import com.web.bookservice.repository.BookRepository;
@@ -31,16 +30,13 @@ public class PostService {
         Optional<Post> findPost = postRepository.findById(id);
 
         findPost.orElseThrow(() -> new PostNotFoundException());
-//
-//        if(!findPost.isPresent())
-//            throw new PostNotFoundException();
 
         return postRepository.findPostDetails(id);
 
     }
 
 
-    public Page<PostPagingDto> findAll(PostSearchCondition condition, Pageable pageable, CustomMemberDetails member)
+    public Page<PostPagingDto> findAll(SearchCondition condition, Pageable pageable, CustomMemberDetails member)
     {
         String loginId = null;
 
@@ -67,6 +63,34 @@ public class PostService {
 
         return new ResponseCodeDto(200, savedPost.getId().toString());
 
+    }
+
+    public ResponseCodeDto updatePost(PostRequestDto request, CustomMemberDetails member) {
+        if(member == null)
+            throw new MemberNotAuthenticatedException("로그인 되어 있지 않습니다.");
+
+        Optional<Post> findPost = postRepository.findById(request.getId());
+
+        findPost.orElseThrow(() -> new PostNotFoundException() );
+
+        findPost.get().updatePost(request.getTitle(), request.getText());
+
+        return new ResponseCodeDto(200, "수정이 완료 되었습니다.");
+
+    }
+
+    public ResponseCodeDto deletePost(Long id, CustomMemberDetails member) {
+
+        if(member == null)
+            throw new MemberNotAuthenticatedException("로그인 되어 있지 않습니다.");
+
+        Optional<Post> findPost = postRepository.findById(id);
+
+        findPost.orElseThrow(() -> new PostNotFoundException() );
+
+        postRepository.delete(findPost.get());
+
+        return new ResponseCodeDto(200, "삭제가 완료 되었습니다.");
     }
 
 

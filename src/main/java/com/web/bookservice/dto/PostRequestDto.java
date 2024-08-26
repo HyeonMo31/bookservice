@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter @Setter
 public class PostRequestDto {
 
+    private Long id;
     private String loginId;
     private String isbn;
     private String title;

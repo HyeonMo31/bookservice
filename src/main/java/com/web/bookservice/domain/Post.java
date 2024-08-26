@@ -47,6 +47,12 @@ public class Post {
         this.text = text;
     }
 
+    public void updatePost(String title, String text) {
+        this.title = title;
+        this.text = text;
+    }
+
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 

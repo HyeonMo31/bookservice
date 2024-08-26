@@ -3,9 +3,8 @@ package com.web.bookservice.dto;
 import lombok.Getter;
 
 @Getter
-public class ReviewRequestDto {
+public class ReviewCommentRequestDto {
 
-    private String isbn;
     private String text;
 
 }

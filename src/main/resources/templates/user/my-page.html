@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body>
+<div class="container heightCal">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <div class="container padding-bottom-3x mb-2">
+        <div class="row">
+            <div class="col-lg-3">
+                <aside class="user-info-wrapper">
+                    <div class="user-cover" style="background-image: url(https://bootdey.com/img/Content/bg1.jpg);">
+                        <div class="info-label" data-toggle="tooltip" title="" data-original-title="You currently have 290 Reward Points to spend"><i class="icon-medal"></i>290 points</div>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <a class="edit-avatar" href="#"></a><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="User"></div>
+                        <div class="user-data">
+                            <h4 id="memoName">이름</h4><span id="memocreatedDate">Joined February 06, 2017</span>
+                        </div>
+                    </div>
+                </aside>
+                <nav class="list-group">
+                    <a class="list-group-item active " th:href="@{/my-page}"><i class="fa fa-user"></i>내 정보</a>
+                    <a class="list-group-item  with-badge" th:href="@{/post?my=true}"><i class="fa fa-th"></i>토론 목록<span class="badge badge-primary badge-pill"></span></a>
+                    <a class="list-group-item"  th:href="@{/my-page/bookmarks}"><i class="fa fa-map"></i>즐겨찾기 목록</a>
+<!--                    <a class="list-group-item with-badge" href="#"><i class="fa fa-heart"></i>Wishlist<span class="badge badge-primary badge-pill">3</span></a>-->
+<!--                    <a class="list-group-item with-badge active" href="#"><i class="fa fa-tag"></i>My Tickets<span class="badge badge-primary badge-pill">4</span></a>-->
+                </nav>
+            </div>
+            <div class="col-lg-9">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">내 정보</h4>
+                    </div>
+                    <form id="profileForm">
+                        <div class="row mt-2">
+                            <div class="col-md-12"><label class="labels">가입일</label><input id="createdDate" disabled type="date" class="form-control"></div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12" ><label class="labels">아이디</label><input id="loginId" disabled type="text" class="form-control"value=""></div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12"><label class="labels">이름</label><input name="name" id="name" type="text" maxlength="6" class="form-control"  value=""></div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12" ><label class="labels">도시</label><input  name="city" id="city" type="text" maxlength="15" class="form-control"  value=""></div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12"><label class="labels">현재 비밀번호</label><input id="password" name="password" type="password" maxlength=15 class="form-control"  value=""></div>
+                        </div>
+                                           <!-- <div class="row mt-3">
+                                              <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value=""></div>
+                                               <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" value="" placeholder="state"></div>
+                                            </div>  -->
+                        <div class="mt-5 text-center"><button id="updateMemberButton" class="btn btn-primary profile-button" type="submit">Save Profile</button></div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+<script>
+
+    let loginId;
+
+    fetch(`/api/members`, {
+        method: "GET",
+        })
+        .then((response) => response.json())
+        .then((member) => {
+            loginId = member.loginId;
+            render(member);
+        })
+        .catch((error) => {
+            console.error("There was a problem with the fetch operation:", error);
+        });
+
+        
+
+    function formatDate(date) {
+        const year = date.getFullYear();
+        let month = (1 + date.getMonth()).toString().padStart(2, '0');
+        let day = date.getDate().toString().padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    }
+    
+    function render(userData) {
+        document.getElementById('memoName').innerText = userData.name;
+        document.getElementById('memocreatedDate').innerText = 'joined ' + formatDate(new Date(userData.createdDate));
+        document.getElementById('createdDate').value = formatDate(new Date(userData.createdDate));
+        document.getElementById('loginId').value = userData.loginId;
+        document.getElementById('name').value = userData.name;
+        document.getElementById('city').value = userData.city;
+
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', function(event) {
+
+        event.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const city = document.getElementById('city').value;
+        const password = document.getElementById('password').value; // Assuming you need to check current password
+        fetch(`/api/members`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, city, password })
+        })
+        .then(response => {
+            return response.json().then(data => {
+                if (response.ok) {
+                    alert("회원정보가 수정 되었습니다.");
+                    window.location.reload();
+                } else if(response.status == 400) {
+                    alert("비밀번호가 일치하지 않습니다.");
+                }
+            });
+        })
+        .catch(error => alert(error.message));
+    });
+        
+    
+</script>
+   
+</html>

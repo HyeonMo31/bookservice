@@ -13,7 +13,7 @@
       <header
         class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom"
       >
-        <div class="col-md-3 mb-2 mb-md-0">
+        <div class="col-md-4 mb-2 mb-md-0">
           <a
             th:href="@{/}"
             class="d-inline-flex link-body-emphasis text-decoration-none"
@@ -31,7 +31,7 @@
           </li>
         </ul>
 
-        <div sec:authorize="isAnonymous()" class="col-md-3 text-end">
+        <div sec:authorize="isAnonymous()" class="col-md-4 text-end">
           <button
             th:onclick="|location.href='@{/login}'|"
             type="button"
@@ -49,15 +49,20 @@
         </div>
         <div
           sec:authorize="isAuthenticated()"
-          class="col-md-3 text-end d-flex justify-content-end"
+          class="col-md-4 text-end d-flex justify-content-end"
         >
+          <div
+            sec:authorize="isAuthenticated()"
+            th:text="${#authentication.principal.member.name} + '님 반갑습니다.'"
+            class="fw-bold d-flex align-items-center mx-1"
+          ></div>
           <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn-outline-primary me-2">
               로그아웃
             </button>
           </form>
           <button
-            th:onclick="|location.href='@{/profile}'|"
+            th:onclick="|location.href='@{/my-page}'|"
             type="button"
             class="btn btn-primary"
           >

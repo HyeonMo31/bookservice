@@ -1,5 +1,6 @@
 package com.web.bookservice.domain;
 
+import com.web.bookservice.dto.JoinDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -41,6 +42,11 @@ public class Member {
         this.role = role;
         this.name = name;
         this.city = city;
+    }
+
+    public void updateMember(JoinDto joinDto) {
+        this.name = joinDto.getName();
+        this.city =joinDto.getCity();
     }
 
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
   <head th:replace="fragments/header :: header"> </head>
   <body>
     <div class="container heightCal">
@@ -158,16 +160,11 @@
                 </div>
               </article>
 
-              <div class="d-flex justify-content-end mb-3" if="">
-                <button if="" type="submit" class="btn btn-primary btn-sm">
+              <div class="d-flex justify-content-end mb-3">
+                <button id="postUpdateBtn" class="btn btn-primary btn-sm">
                   수정
                 </button>
-                <button
-                  if=""
-                  th:onclick="confirmDelete(this)"
-                  type="submit"
-                  class="btn btn-primary btn-sm mx-2"
-                >
+                <button id="postDeleteBtn" class="btn btn-primary btn-sm mx-2">
                   삭제
                 </button>
               </div>
@@ -187,6 +184,7 @@
                       name="comment"
                       class="form-control"
                       placeholder="댓글을 작성하십시오."
+                      style="resize: none"
                       rows="3"
                     ></textarea>
                     <textarea
@@ -196,11 +194,16 @@
                       name="comment"
                       class="form-control"
                       placeholder="로그인 하십시오."
+                      style="resize: none"
                       rows="3"
                     ></textarea>
                   </div>
                   <div class="form-group mt-3">
-                    <button if="" class="btn btn-primary btn-sm" type="submit">
+                    <button
+                      id="addComment"
+                      class="btn btn-primary btn-sm"
+                      type="submit"
+                    >
                       작성
                     </button>
                   </div>
@@ -220,31 +223,47 @@
   <script th:inline="javascript">
     const url = new URL(window.location.href);
     const postId = url.pathname.split("/").pop();
+    const postUpdateBtn = document.getElementById("postUpdateBtn");
+    const postDeleteBtn = document.getElementById("postDeleteBtn");
 
-    function fetchPost() {
-      fetch(`/api/post/${postId}`)
-        .then((response) => {
-          if (!response.ok) {
-            return response.json().then((data) => {
-              if (response.status === 404) {
-                alert("글이 존재하지 않습니다.");
-                history.go(-1);
-              } else {
-                console.error("Error:", data.message);
-                throw new Error(data.message);
-              }
-            });
-          }
-          return response.json();
-        })
-        .then((data) => {
-          displayBook(data.bookInfo);
-          displayPost(data);
-          displayComments(data.commentsDto);
-        })
-        .catch((error) => {
-          console.error("Error fetching posts:", error);
-        });
+    async function fetchData(url) {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (!response.ok) {
+          handleFetchError(data);
+          return;
+        }
+        return data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        throw error;
+      }
+    }
+
+    function handleFetchError(data) {
+      if (data.code === 404) {
+        alert("글이 존재하지 않습니다.");
+        history.back();
+      }
+    }
+
+    async function render() {
+      const postDataUrl = `/api/post/${postId}`;
+      const loginMemberUrl = `/api/members`;
+
+      try {
+        const [post, member] = await Promise.all([
+          fetchData(postDataUrl),
+          fetchData(loginMemberUrl),
+        ]);
+
+        displayBook(post.bookInfo);
+        displayPost(post, member);
+        displayComments(post.commentsDto, member);
+      } catch (error) {
+        console.error("데이터 렌더링 중 오류가 발생했습니다.", error);
+      }
     }
 
     function displayBook(book) {
@@ -256,26 +275,32 @@
       document.getElementById("isbn").textContent = book.isbn;
     }
 
-    function displayPost(data) {
+    function displayPost(data, member) {
       document.getElementById("name").textContent = data.name;
       document.getElementById("loginId").textContent = data.loginId;
       document.getElementById("createdDate").textContent = data.createdDate;
       document.getElementById("postTitle").textContent = data.postTitle;
       document.getElementById("text").textContent = data.text;
+
+      if (data.loginId !== member.loginId) {
+        postUpdateBtn.classList.add("hidden");
+        postDeleteBtn.classList.add("hidden");
+      }
     }
 
-    function displayComments(comments) {
+    function displayComments(comments, member) {
       const container = document.getElementById("commentContainer");
       if (comments.length === 0) {
         container.innerHTML = `<h6 class="mt-5 text-center">등록 된 댓글이 존재하지 않습니다.</h6>`;
         return;
       }
+
       comments.forEach((comment) => {
         const commentDiv = document.createElement("div");
-        commentDiv.id = commentDiv.id;
+        commentDiv.id = comment.id;
         commentDiv.className = "media g-mb-30 media-comment";
         commentDiv.innerHTML = `
-           
+
                   <div  class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
                     <div style="display:flex" class="g-mb-15">
                        <img
@@ -304,7 +329,7 @@
                       id="commentText"
                       style="white-space: pre-wrap"
                       class="text-break"
-                    >${comment.text}}
+                    >${comment.text}
                     </p>
                      <ul class="list-inline d-sm-flex my-0">
                       <li class="list-inline-item g-mr-20">
@@ -340,8 +365,7 @@
                       </li>
                       <div>
                         <button
-                          if=""
-                          th:onclick="commentDelete(this)"
+                        id="deleteComment-${comment.id}"
                           type="submit"
                           class="btn btn-primary btn-sm mx-2"
                         >
@@ -351,86 +375,86 @@
                     </ul>`;
         container.appendChild(commentDiv);
 
-        // const deleteButton = reviewLi.querySelector(".deleteBtn");
-        // if (review.loginId !== member.loginId) {
-        //   deleteButton.classList.add("hidden");
-        // }
+        const deleteButton = commentDiv.querySelector(".btn");
+        if (comment.loginId !== member.loginId) {
+          deleteButton.classList.add("hidden");
+        }
       });
     }
 
-    function commentDelete(button) {
-      var discussionId = button.getAttribute("data-discussion-id");
-      var commentId = button.getAttribute("data-comment-id");
+    document.getElementById("postUpdateBtn").addEventListener("click", () => {
+      window.location.href = `/post/update/${postId}`;
+    });
 
-      var result = confirm("댓글을 삭제하시겠습니까?");
-
-      if (result) {
-        deleteComment(discussionId, commentId);
-      } else {
-      }
-    }
-
-    function deleteComment(discussionId, commentId) {
-      fetch(
-        "/discussion/delete/comment/" + commentId + "/post/" + discussionId,
-        {
+    document.getElementById("postDeleteBtn").addEventListener("click", () => {
+      if (confirm("정말 삭제하시겠습니까?")) {
+        fetch(`/api/post/${postId}`, {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("댓글 삭제에 실패했습니다.");
-          }
-          return response.text();
         })
-        .then((data) => {
-          alert(data);
-          window.location.replace("/discussion/post/" + discussionId);
-        })
-        .catch((error) => {
-          // 에러 처리
-          console.error(error);
-          alert("댓글 삭제에 실패했습니다.");
-        });
-    }
-
-    function confirmDelete(button) {
-      var discussionId = button.getAttribute("data-discussion-id");
-
-      var result = confirm("작성글을 삭제하시겠습니까?");
-
-      if (result) {
-        deleteDiscussion(discussionId);
-      } else {
+          .then((response) => {
+            return response.json().then((data) => {
+              if (response.ok) {
+                history.back();
+              } else if (response.status == 401) {
+                window.location.href = "/login";
+              }
+              alert(data.message);
+            });
+          })
+          .catch((error) => alert(error.message));
       }
-    }
+    });
 
-    function deleteDiscussion(discussionId) {
-      fetch("/discussion/delete/post/" + discussionId, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+    document.getElementById("addComment").addEventListener("click", () => {
+      const text = document.getElementById("comment").value.trim();
+      fetch(`/api/post/${postId}/comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
       })
         .then((response) => {
-          if (!response.ok) {
-            throw new Error("댓글 삭제에 실패했습니다.");
+          return response.json().then((data) => {
+            if (response.ok) {
+              window.location.reload();
+            } else if (response.status == 401) {
+              window.location.href = "/login";
+            } else if (response.status == 404) {
+              history.back();
+            }
+            alert(data.message);
+          });
+        })
+        .catch((error) => alert(error.message));
+    });
+
+    document
+      .getElementById("commentContainer")
+      .addEventListener("click", function (event) {
+        if (event.target.classList.contains("btn")) {
+          const commentDiv = event.target.closest(".media");
+          const commentId = commentDiv.id;
+
+          if (confirm("정말로 이 리뷰를 삭제하시겠습니까?")) {
+            fetch(`/api/post/${postId}/comments/${commentId}`, {
+              method: "DELETE",
+            })
+              .then((response) => {
+                return response.json().then((data) => {
+                  if (response.ok) {
+                    window.location.reload();
+                  } else if (response.status == 401) {
+                    window.location.href = "/login";
+                  } else if (response.status == 404) {
+                    history.back();
+                  }
+                  alert(data.message);
+                });
+              })
+              .catch((error) => alert(error.message));
           }
-          return response.text();
-        })
-        .then((data) => {
-          alert(data);
-          window.location.replace("/discussion/list");
-        })
-        .catch((error) => {
-          // 에러 처리
-          console.error(error);
-          alert("댓글 삭제에 실패했습니다.");
-        });
-    }
-    fetchPost();
+        }
+      });
+
+    render();
   </script>
 </html>

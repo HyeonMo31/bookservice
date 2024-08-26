@@ -21,12 +21,4 @@ public class BookDto {
 
     public BookDto() {}
 
-    @QueryProjection
-    public BookDto(String title, String image, String author, LocalDate pubdate, String isbn) {
-        this.title = title;
-        this.image = image;
-        this.author = author;
-        this.pubdate = pubdate;
-        this.isbn = isbn;
-    }
 }
