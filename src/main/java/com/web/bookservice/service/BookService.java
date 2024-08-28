@@ -5,12 +5,18 @@ import com.web.bookservice.dto.BookDto;
 import com.web.bookservice.exception.BookNotFoundException;
 import com.web.bookservice.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class BookService {
 
     private final BookRepository bookRepository;
@@ -23,19 +29,35 @@ public class BookService {
             throw new BookNotFoundException();
         }
 
-        BookDto bookDto = new BookDto();
-
-        bookDto.setIsbn(findBook.getIsbn());
-        bookDto.setPubdate(findBook.getPubdate());
-        bookDto.setPublisher(findBook.getPublisher());
-        bookDto.setImage(findBook.getImage());
-        bookDto.setDescription(findBook.getDescription());
-        bookDto.setPrice(findBook.getPrice());
-        bookDto.setTitle(findBook.getTitle());
-        bookDto.setAuthor(findBook.getAuthor());
+        BookDto bookDto = new BookDto(findBook);
 
         return bookDto;
     }
 
+    public Map<String, BookDto> findTopBook() {
+
+
+        Map<String, BookDto> map = new HashMap<>();
+
+        Book reviewBook = bookRepository.findTopBookByReviewCount(Limit.of(1));
+        if(reviewBook == null)
+            map.put("review", new BookDto());
+        else
+            map.put("review", new BookDto(reviewBook));
+
+        Book postBook = bookRepository.findTopBookByPostCount(Limit.of(1));
+        if(postBook == null)
+            map.put("post", new BookDto());
+        else
+            map.put("post", new BookDto(postBook));
+
+        Book bookmarkBook = bookRepository.findTopBookByBookmarkCount(Limit.of(1));
+        if(reviewBook == null)
+            map.put("bookmark", new BookDto());
+        else
+            map.put("bookmark", new BookDto(bookmarkBook));
+
+        return map;
+    }
 
 }

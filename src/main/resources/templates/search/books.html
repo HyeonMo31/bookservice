@@ -51,12 +51,12 @@
                         <select
                           class="form-select"
                           data-trigger="true"
-                          name="orderby"
-                          id="orderby"
+                          name="orderBy"
+                          id="orderBy"
                           aria-label="Default select example"
                         >
-                          <option value="df">Default</option>
-                          <option value="ne">Newest</option>
+                          <option selected value="sim">정확도 순서</option>
+                          <option value="date">출간 최신 순</option>
                         </select>
                       </div>
                     </div>
@@ -89,28 +89,33 @@
     <script>
       const itemsPerPage = 10;
       const params = new URLSearchParams(window.location.search);
-      const query = params.get("query") || "";
-      let orderby = params.get("sort") || "df";
+      const query = params.get("query");
+      let orderBy = params.get("orderBy") || "sim";
       let currentPage = parseInt(params.get("page")) || 1;
       let totalPages = 0;
       let totalItems = 0;
 
-      document.getElementById("orderby").value = orderby;
+      if (orderBy) {
+        document.getElementById("orderBy").value = orderBy;
+      }
 
       document
-        .getElementById("orderby")
+        .getElementById("orderBy")
         .addEventListener("change", function () {
-          orderby = this.value;
-          currentPage = 1; // Reset to first page on sort change
-          fetchBooks(currentPage);
+          orderBy = this.value;
+          const url = new URL(window.location.href);
+          if (orderBy) {
+            url.searchParams.set("orderBy", orderBy);
+            url.searchParams.set("page", 1);
+          } else {
+            url.searchParams.delete("orderBy");
+          }
+          window.location.href = url.toString();
         });
 
       function fetchBooks(page = 1) {
-        let apiUrl = `/api/books?query=${query}&page=${page}`;
-        if (orderby === "ne") {
-          apiUrl += "&sort=date";
-        }
-
+        let apiUrl = `/api/books?query=${query}&page=${page}&orderBy=${orderBy}`;
+        console.log(apiUrl);
         fetch(apiUrl)
           .then((response) => response.json())
           .then((data) => {
@@ -186,7 +191,7 @@
                     <li class="page-item">
                         <a class="page-link" href="?query=${query}&page=${
             startPage - 10
-          }&sort=${orderby}">
+          }&orderBy=${orderBy}">
                             <i class="bi bi-chevron-double-left fs-15"></i>
                         </a>
                     </li>
@@ -196,7 +201,7 @@
         for (let i = startPage; i <= endPage; i++) {
           pagination.innerHTML += `
                     <li class="page-item ${i === current ? "active" : ""}">
-                        <a class="page-link" href="?query=${query}&page=${i}&sort=${orderby}">${i}</a>
+                        <a class="page-link" href="?query=${query}&page=${i}&orderBy=${orderBy}">${i}</a>
                     </li>
                 `;
         }
@@ -206,7 +211,7 @@
                     <li class="page-item">
                         <a class="page-link" href="?query=${query}&page=${
             endPage + 1
-          }&sort=${orderby}">
+          }&orderBy=${orderBy}">
                             <i class="bi bi-chevron-double-right fs-15"></i>
                         </a>
                     </li>

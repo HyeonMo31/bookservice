@@ -105,22 +105,11 @@
                       <th scope="col">책 이름</th>
                       <th scope="col">저자</th>
                       <th scope="col">출판사</th>
+                      <th scope="col">출판일</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr class="text-center" >
-                      <th scope="row" class="ps-4">
-                        <div >1</div>
-                      </th>
-                      <td> <a href=""
-                              class="text-body">123456789</a>
-                      <td><a href="">
-                        <span  class="badge badge-soft-success mb-0">책 이름ㄴㄴㄴㄴ</span></a>
-                      </td>
-                      <td><span >저자</span></td>
-                      <td><span>출판사</span></td>
-                    </tr>
-                    
+                    <tbody id="tbody">
+                  
                     </tbody>
                   </table>
                 </div>
@@ -147,6 +136,168 @@
 <div th:replace="fragments/footer :: footer"></div>
 </body>
 <script>
-  
+   const params = new URLSearchParams(window.location.search);
+    let url = new URL(window.location.href);
+    const query = params.get("query");
+    const select = params.get("select");
+    let orderBy = params.get("orderBy");
+    let currentPage = params.get("page");
+
+    if (orderBy) {
+      document.getElementById("orderBy").value = orderBy;
+    }
+    if (select) {
+      document.getElementById("select").value = select;
+    }
+    if (query) {
+      document.getElementById("query").value = query;
+    }
+
+    document.getElementById("orderBy").addEventListener("change", function () {
+      orderBy = this.value;
+      const url = new URL(window.location.href);
+      if (orderBy) {
+        url.searchParams.set("orderBy", orderBy);
+        url.searchParams.set("page", 1);
+      } else {
+        url.searchParams.delete("orderBy");
+      }
+      window.location.href = url.toString();
+    });
+
+    function fetchBookmarkList(currentPage) {
+      const page = currentPage ?? 1;
+
+      let apiUrl = `/api/bookmarks?paged=true&select=${select}&query=${query}&page=${
+        page - 1
+      }&orderBy=${orderBy}`;
+
+      fetch(apiUrl, { method: "GET" })
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((data) => {
+              if (response.status === 401) {
+                  window.location.href = "/login";
+              } else {
+                console.error("Error:", data.message);
+                throw new Error(data.message);
+              }
+            });
+          }
+          return response.json();
+        })
+        .then((data) => {
+          displayBookmarks(data);
+          updatePagination(data.page, page);
+          updateShowing(page, data.page.totalElements);
+        })
+        .catch((error) => {
+          console.error("Error fetching bookmarks:", error);
+        });
+    }
+
+    function displayBookmarks(data) {
+      const tbody = document.getElementById("tbody");
+
+      if (data.page.totalElements == 0) {
+        tbody.innerHTML = `<h1 class="mt-5 text-center">존재하는 즐겨찾기가 없습니다.</h1>`;
+        return;
+      }
+      const bookmarkList = data._embedded.bookmarkDtoList;
+
+      bookmarkList.forEach((book) => {
+        console.log(book);
+        const bookTitle =
+        book.bookTitle.length > 20
+            ? book.bookTitle.slice(0, 30) + "..."
+            : book.bookTitle;
+        const author =
+        book.author.length > 4
+            ? book.author.slice(0, 4) + "..."
+            : book.author;
+        const publisher =
+        book.publisher.length > 6
+            ? book.publisher.slice(0, 6) + "..."
+            : book.publisher;
+
+        const tr = document.createElement("tr");
+        tr.className = "text-center";
+        tr.innerHTML = `
+                      <th scope="row" class="ps-4">
+                        <div >${book.id}</div>
+                      </th>
+                      <td> <span>${book.isbn}</span>
+                      <td><a href="/search/book/${book.isbn}">
+                        <span  class="badge badge-soft-success mb-0">${bookTitle}</span></a>
+                      </td>
+                      <td><span>${author}</span></td>
+                      <td><span>${publisher}</span></td>
+                      <td><span>${book.pubdate}</span></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updatePagination(page, current) {
+      const pagination = document.getElementById("pagination");
+      pagination.innerHTML = "";
+
+      const startPage = Math.max(1, Math.floor((current - 1) / 10) * 10 + 1);
+      const endPage = Math.min(page.totalPages, startPage + 9);
+
+      if (query != null) {
+        params.set("query", query);
+      }
+      if (orderBy != null) {
+        params.set("orderBy", orderBy);
+      }
+      if (select != null) {
+        params.set("select", select);
+      }
+      if (currentPage != null) {
+        params.delete("page");
+      }
+
+      let finalUrl = `/my-page/bookmarks?${params.toString()}`;
+
+      if (startPage > 1) {
+        pagination.innerHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="${finalUrl}&page=${
+          startPage - 10
+        }">
+                            <i class="bi bi-chevron-double-left fs-15"></i>
+                        </a>
+                    </li>
+                `;
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        pagination.innerHTML += `
+                    <li class="page-item ${i == current ? "active" : ""}">
+                        <a class="page-link" href="${finalUrl}&page=${i}">${i}</a>
+                    </li>
+                `;
+      }
+
+      if (endPage < page.totalPages) {
+        pagination.innerHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="${finalUrl}&page=${
+          endPage + 1
+        }">
+                            <i class="bi bi-chevron-double-right fs-15"></i>
+                        </a>
+                    </li>
+                `;
+      }
+    }
+
+    function updateShowing(page, totalItems) {
+      const showingElement = document.getElementById("showing");
+      const start = (page - 1) * 10 + 1;
+      const end = Math.min(page * 10, totalItems);
+      showingElement.textContent = `Showing ${start} – ${end} of ${totalItems} results`;
+    }
+    fetchBookmarkList(currentPage);
 </script>
 </html>

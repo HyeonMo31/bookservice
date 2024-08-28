@@ -10,16 +10,16 @@ import java.time.LocalDate;
 public class BookmarkDto {
 
     Long id;
-    String title;
+    String bookTitle;
     String author;
     String publisher;
     LocalDate pubdate;
     String isbn;
 
     @QueryProjection
-    public BookmarkDto(Long id, String title, String author, String publisher, LocalDate pubdate, String isbn) {
+    public BookmarkDto(Long id, String bookTitle, String author, String publisher, LocalDate pubdate, String isbn) {
         this.id = id;
-        this.title = title;
+        this.bookTitle = bookTitle;
         this.author = author;
         this.publisher = publisher;
         this.pubdate = pubdate;

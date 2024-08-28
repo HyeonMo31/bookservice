@@ -20,13 +20,14 @@
             </div>
             <div class="card-body">
               <!--                    <h1 class="card-title pricing-card-title">책이름</h1>-->
-              <img src="img/1.png" width="150px" height="180px" />
+              <img id="review-image" width="150px" height="180px" />
               <ul class="list-unstyled mt-3 mb-4">
-                <li>책이름</li>
-                <li>저자</li>
-                <li>평점</li>
+                <li id="review-title">책이름</li>
+                <li id="review-author">저자</li>
+                <li id="review-pubdate">출판일</li>
               </ul>
               <button
+                id="review-button"
                 type="button"
                 class="w-100 btn btn-lg btn-outline-primary"
               >
@@ -42,13 +43,14 @@
             </div>
             <div class="card-body">
               <!--                    <h1 class="card-title pricing-card-title">책이름</h1>-->
-              <img src="img/2.png" width="150px" height="180px" />
+              <img id="post-image" width="150px" height="180px" />
               <ul class="list-unstyled mt-3 mb-4">
-                <li>책이름</li>
-                <li>저자</li>
-                <li>평점</li>
+                <li id="post-title">책이름</li>
+                <li id="post-author">저자</li>
+                <li id="post-pubdate">출판일</li>
               </ul>
               <button
+                id="post-button"
                 type="button"
                 class="w-100 btn btn-lg btn-outline-primary"
               >
@@ -64,13 +66,14 @@
             </div>
             <div class="card-body">
               <!--                    <h1 class="card-title pricing-card-title">책이름</h1>-->
-              <img src="img/3.png" width="150px" height="180px" />
+              <img id="bookmark-image" width="150px" height="180px" />
               <ul class="list-unstyled mt-3 mb-4">
-                <li>책이름</li>
-                <li>저자</li>
-                <li>평점</li>
+                <li id="bookmark-title">책이름</li>
+                <li id="bookmark-author">저자</li>
+                <li id="bookmark-pubdate">출판일</li>
               </ul>
               <button
+                id="bookmark-button"
                 type="button"
                 class="w-100 btn btn-lg btn-outline-primary"
               >
@@ -83,5 +86,37 @@
     </div>
     <div th:replace="fragments/footer :: footer"></div>
   </body>
-  <script></script>
+  <script>
+    fetch(`/api/books/top`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => render(data))
+      .catch((error) =>
+        console.error("There was a problem with the fetch operation:", error)
+      );
+
+    // Handle click events
+    function handleClick(isbn) {
+      location.href = `/search/book/${isbn}`;
+    }
+
+    // Render the data to the DOM
+    function render(data) {
+      updateCard("review", data.review);
+      updateCard("post", data.post);
+      updateCard("bookmark", data.bookmark);
+    }
+
+    // Update card information
+    function updateCard(type, bookData) {
+      document.getElementById(`${type}-image`).src = bookData.image;
+      document.getElementById(`${type}-title`).textContent = bookData.bookTitle;
+      document.getElementById(`${type}-author`).textContent = bookData.author;
+      document.getElementById(`${type}-pubdate`).textContent = bookData.pubdate;
+      document
+        .getElementById(`${type}-button`)
+        .addEventListener("click", () => handleClick(bookData.isbn));
+    }
+  </script>
 </html>

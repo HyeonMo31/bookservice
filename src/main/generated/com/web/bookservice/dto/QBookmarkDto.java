@@ -13,8 +13,8 @@ public class QBookmarkDto extends ConstructorExpression<BookmarkDto> {
 
     private static final long serialVersionUID = -1052156719L;
 
-    public QBookmarkDto(com.querydsl.core.types.Expression<Long> id, com.querydsl.core.types.Expression<String> title, com.querydsl.core.types.Expression<String> author, com.querydsl.core.types.Expression<String> publisher, com.querydsl.core.types.Expression<java.time.LocalDate> pubdate, com.querydsl.core.types.Expression<String> isbn) {
-        super(BookmarkDto.class, new Class<?>[]{long.class, String.class, String.class, String.class, java.time.LocalDate.class, String.class}, id, title, author, publisher, pubdate, isbn);
+    public QBookmarkDto(com.querydsl.core.types.Expression<Long> id, com.querydsl.core.types.Expression<String> bookTitle, com.querydsl.core.types.Expression<String> author, com.querydsl.core.types.Expression<String> publisher, com.querydsl.core.types.Expression<java.time.LocalDate> pubdate, com.querydsl.core.types.Expression<String> isbn) {
+        super(BookmarkDto.class, new Class<?>[]{long.class, String.class, String.class, String.class, java.time.LocalDate.class, String.class}, id, bookTitle, author, publisher, pubdate, isbn);
     }
 
 }

@@ -66,18 +66,16 @@ public class NaverBookService {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
                 LocalDate date = LocalDate.parse(dateString, formatter);
 
-                BookDto item = new BookDto();
+//                item.setAuthor(itemNode.get("author").asText());
+//                item.setIsbn(itemNode.get("isbn").asText());
+//                item.setDescription(itemNode.get("description").asText());
+//                item.setPrice(itemNode.get("discount").asInt());
+//                item.setImage(itemNode.get("image").asText());
+//                item.setTitle(itemNode.get("title").asText());
+//                item.setPublisher(itemNode.get("publisher").asText());
+//                item.setPubdate(date);
 
-                item.setAuthor(itemNode.get("author").asText());
-                item.setIsbn(itemNode.get("isbn").asText());
-                item.setDescription(itemNode.get("description").asText());
-                item.setPrice(itemNode.get("discount").asInt());
-                item.setImage(itemNode.get("image").asText());
-                item.setTitle(itemNode.get("title").asText());
-                item.setPublisher(itemNode.get("publisher").asText());
-                item.setPubdate(date);
 
-                response.getItems().add(item);
                 Book book = new Book(itemNode.get("title").asText(),
                         itemNode.get("image").asText(),
                         itemNode.get("author").asText(),
@@ -86,6 +84,10 @@ public class NaverBookService {
                         date,
                         itemNode.get("isbn").asText(),
                         itemNode.get("description").asText());
+
+                BookDto item = new BookDto(book);
+
+                response.getItems().add(item);
 
                 if(!repository.existsByIsbn(book.getIsbn())) {
                     repository.save(book);

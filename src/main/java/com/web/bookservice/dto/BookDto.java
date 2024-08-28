@@ -1,6 +1,7 @@
 package com.web.bookservice.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.web.bookservice.domain.Book;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,4 +22,14 @@ public class BookDto {
 
     public BookDto() {}
 
+    public BookDto(Book book) {
+        this.title = book.getTitle();
+        this.image = book.getImage();
+        this.author = book.getAuthor();
+        this.price = book.getPrice();
+        this.publisher = book.getPublisher();
+        this.pubdate = book.getPubdate();
+        this.isbn = book.getIsbn();
+        this.description = book.getDescription();
+    }
 }

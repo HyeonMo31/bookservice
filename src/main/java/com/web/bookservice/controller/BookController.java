@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,10 +26,12 @@ public class BookController {
     @GetMapping("/api/books")
     public ResponseEntity<?> findBooks(@RequestParam("query")String query,
                                         @RequestParam(defaultValue = "1", name = "page")int pageNum,
-                                      @RequestParam(defaultValue = "sim", name = "sort")String sort) {
+                                      @RequestParam(defaultValue = "sim", name = "orderBy")String orderBy) {
 
-        NaverBookResponseDto response = naverBookService.searchBooks(query, pageNum, sort);
-
+        NaverBookResponseDto response = naverBookService.searchBooks(query, pageNum, orderBy);
+        System.out.println("query = " + query);
+        System.out.println("pageNum = " + pageNum);
+        System.out.println("orderBy = " + orderBy);
         return ResponseEntity.ok(response);
 
     }
@@ -41,6 +44,14 @@ public class BookController {
 
         return bookService.findBookDetail(isbn);
 
+    }
+
+    /**
+     * DB, 리뷰 많은 순, 언급 1등, 즐겨찾기 1등 책 DB 조회
+     */
+    @GetMapping("/api/books/top")
+    public ResponseEntity<Map<String, BookDto>> findTopBook() {
+        return ResponseEntity.ok(bookService.findTopBook());
     }
 
     /**
