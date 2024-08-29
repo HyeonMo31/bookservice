@@ -13,8 +13,33 @@
             method="post"
             class="needs-validation"
             novalidate=""
+            enctype="multipart/form-data"
           >
             <div class="row g-3">
+              <div class="row g-3">
+                <div class="col-2">
+                  <label for="memberImage" class="form-label">유저 사진</label>
+                  <img
+                    id="previewImage"
+                    style="height: 100px; width: 100px"
+                    src="/../img/head.png"
+                    alt="유저 이미지 미리보기"
+                  />
+                </div>
+              </div>
+              <div class="col-4">
+                <input
+                  type="file"
+                  class="form-control"
+                  id="memberImage"
+                  th:field="*{memberImage}"
+                  placeholder=""
+                  value=""
+                  required=""
+                  th:errorclass="field-error"
+                  maxlength="15"
+                />
+              </div>
               <div class="col-12">
                 <label for="id" class="form-label">아이디</label>
                 <input
@@ -47,7 +72,7 @@
               </div>
 
               <div class="col-12">
-                <label for="name" class="form-label">도시</label>
+                <label for="city" class="form-label">도시</label>
                 <input
                   type="text"
                   class="form-control"
@@ -86,4 +111,19 @@
     </div>
     <div th:replace="fragments/footer :: footer"></div>
   </body>
+  <script>
+    const previewImage = document.getElementById("previewImage");
+    const memberImage = document.getElementById("memberImage"); // Assuming your file input has this ID
+
+    function previewImageFuc(event) {
+      console.log("D");
+      const reader = new FileReader();
+      reader.onload = function () {
+        previewImage.src = reader.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+
+    memberImage.addEventListener("change", previewImageFuc);
+  </script>
 </html>

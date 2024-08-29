@@ -52,7 +52,7 @@ public class BookService {
             map.put("post", new BookDto(postBook));
 
         Book bookmarkBook = bookRepository.findTopBookByBookmarkCount(Limit.of(1));
-        if(reviewBook == null)
+        if(bookmarkBook == null)
             map.put("bookmark", new BookDto());
         else
             map.put("bookmark", new BookDto(bookmarkBook));

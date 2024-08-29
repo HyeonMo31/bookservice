@@ -33,15 +33,20 @@ public class Member {
     @CreatedDate
     private LocalDateTime createdDate;
 
+    @Embedded
+    private UploadFile memberImage;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public Member(String password, String loginId, Role role, String name, String city) {
+    public Member(String password, String loginId, Role role, String name, String city,
+                  UploadFile memberImage) {
         this.password = password;
         this.loginId = loginId;
         this.role = role;
         this.name = name;
         this.city = city;
+        this.memberImage = memberImage;
     }
 
     public void updateMember(JoinDto joinDto) {

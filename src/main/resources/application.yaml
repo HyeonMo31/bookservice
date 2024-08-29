@@ -27,3 +27,6 @@ server:
       tracking-modes: cookie
 #      timeout : 10
 #세션 정보가 url에 노출되지 않도록
+
+file:
+  dir: C:\\Users\\HYEONMO\\Desktop\\GitHub\\advanced bookservice\\bookservice\\src\\main\\resources\\memberData\\

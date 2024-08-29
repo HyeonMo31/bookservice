@@ -47,7 +47,6 @@ public class NaverBookService {
         }
 
         pageNum = ((pageNum - 1) * 10) + 1;
-        log.info("pageNum = {}",pageNum);
         String apiURL = "https://openapi.naver.com/v1/search/book?query=" + query +"&start=" + pageNum
                 + "&sort=" + sort;    // JSON 결과
 
@@ -65,16 +64,6 @@ public class NaverBookService {
                 String dateString = itemNode.get("pubdate").asText();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
                 LocalDate date = LocalDate.parse(dateString, formatter);
-
-//                item.setAuthor(itemNode.get("author").asText());
-//                item.setIsbn(itemNode.get("isbn").asText());
-//                item.setDescription(itemNode.get("description").asText());
-//                item.setPrice(itemNode.get("discount").asInt());
-//                item.setImage(itemNode.get("image").asText());
-//                item.setTitle(itemNode.get("title").asText());
-//                item.setPublisher(itemNode.get("publisher").asText());
-//                item.setPubdate(date);
-
 
                 Book book = new Book(itemNode.get("title").asText(),
                         itemNode.get("image").asText(),
