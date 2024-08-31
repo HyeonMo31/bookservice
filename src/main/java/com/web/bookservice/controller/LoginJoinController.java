@@ -43,7 +43,6 @@ public class LoginJoinController {
     public String join(@Validated  @ModelAttribute JoinDto joinDTO, BindingResult result
     , RedirectAttributes redirectAttributes) throws IOException {
 
-        log.info("joinDto = {}", joinDTO.getMemberImage());
         if(result.hasErrors()) {
             return "user/join";
         }

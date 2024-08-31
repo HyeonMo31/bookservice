@@ -31,7 +31,7 @@ public class NaverBookService {
 
     private final BookRepository repository;
 
-    public NaverBookResponseDto searchBooks(String query, int pageNum, String sort) {
+    public NaverBookResponseDto searchBooks(String query, int start, String sort) {
 
         String clientId = "ha7STvEFwLDwnDflONB5"; //애플리케이션 클라이언트 아이디
         String clientSecret = "4zNLWo0tMF"; //애플리케이션 클라이언트 시크릿
@@ -46,8 +46,8 @@ public class NaverBookService {
             throw new RuntimeException("검색어 인코딩 실패",e);
         }
 
-        pageNum = ((pageNum - 1) * 10) + 1;
-        String apiURL = "https://openapi.naver.com/v1/search/book?query=" + query +"&start=" + pageNum
+        start = ((start - 1) * 10) + 1;
+        String apiURL = "https://openapi.naver.com/v1/search/book?query=" + query +"&start=" + start
                 + "&sort=" + sort;    // JSON 결과
 
 

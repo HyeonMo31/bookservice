@@ -97,18 +97,19 @@ public class MemberService {
         }
         //자바스크립트 form.append를 통해 제출했을 때, 값이 없으면 null이 들어온다.
         //반대로 form 태그 제출했을 때, 빈 객체가 들어와 isEmpty에 접근할 수 있다.
-        if(memberImage != null || !memberImage.isEmpty()) {
-            List<String> allowedExtensions = List.of("jpg", "png", "gif");
-            String extension = fileStore.getExtract(memberImage.getOriginalFilename());
-            if(!allowedExtensions.contains(extension.toLowerCase()))
-                throw new ImageTypeMisException();
+        if(memberImage != null) {
+            if(!memberImage.isEmpty()) {
+                List<String> allowedExtensions = List.of("jpg", "png", "gif");
+                String extension = fileStore.getExtract(memberImage.getOriginalFilename());
+                if(!allowedExtensions.contains(extension.toLowerCase()))
+                    throw new ImageTypeMisException();
 
-            //파일 삭제 // deafult 사진인 tuna이면 삭제하면 안된다.
-            if(!findMember.getMemberImage().getStoreFileName().equals("tuna.jpg"));
-                fileStore.deleteFile(findMember.getMemberImage().getStoreFileName());
-            //파일저장
-            uploadFile = fileStore.storeDefaultFile(joinDto.getMemberImage());
-
+                //파일 삭제 // deafult 사진인 tuna이면 삭제하면 안된다.
+                if(!findMember.getMemberImage().getStoreFileName().equals("tuna.jpg"))
+                    fileStore.deleteFile(findMember.getMemberImage().getStoreFileName());
+                //파일저장
+                uploadFile = fileStore.storeDefaultFile(joinDto.getMemberImage());
+            }
         }
 
 

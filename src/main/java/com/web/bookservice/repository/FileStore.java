@@ -32,7 +32,7 @@ public class FileStore {
     public UploadFile storeMemberFile(MultipartFile multipartFile, String loginId) throws IOException
     {
 
-        if (multipartFile.isEmpty()) {
+        if (!multipartFile.isEmpty()) {
             return null;
         }
 
