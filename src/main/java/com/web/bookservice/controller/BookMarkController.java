@@ -31,9 +31,6 @@ public class BookMarkController {
                                                 SearchCondition condition,
                                                 PagedResourcesAssembler assembler,
                                                 @RequestParam(value = "paged", defaultValue = "false", required = false)boolean paged) {
-        if(member == null) {
-            member = new CustomMemberDetails(memberRepository.findByLoginId("thesting31"));
-        }
 
         if(paged)
             return ResponseEntity.ok(assembler.toModel(bookMarkService.findByPage(condition, pageable, member)));

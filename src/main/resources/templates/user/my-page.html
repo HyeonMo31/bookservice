@@ -14,7 +14,7 @@
                     </div>
                     <div class="user-info">
                         <div class="user-avatar">
-                            <a class="edit-avatar" href="#"></a><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="User"></div>
+                            <img id="memberImage" alt="User"></div>
                         <div class="user-data">
                             <h4 id="memoName">이름</h4><span id="memocreatedDate">Joined February 06, 2017</span>
                         </div>
@@ -34,6 +34,26 @@
                         <h4 class="text-right">내 정보</h4>
                     </div>
                     <form id="profileForm">
+                        <div class="row mt-2">
+                            <div class="col-2">
+                              <label for="imageInput" class="form-label">유저 사진</label>
+                              <img
+                                id="previewImage"
+                                style="height: 100px; width: 100px"
+                                src="/../img/tuna.jpg"
+                                alt="유저 이미지 미리보기"
+                              />
+                            </div>
+                        </div>
+                          <div class="col-4">
+                            <input
+                              type="file"
+                              class="form-control"
+                              id="imageInput"
+                              placeholder=""
+                              maxlength="15"
+                            />
+                          </div>
                         <div class="row mt-2">
                             <div class="col-md-12"><label class="labels">가입일</label><input id="createdDate" disabled type="date" class="form-control"></div>
                         </div>
@@ -74,13 +94,25 @@
         })
         .then((response) => response.json())
         .then((member) => {
-            loginId = member.loginId;
             render(member);
+            loginId = member.loginId;
         })
         .catch((error) => {
             console.error("There was a problem with the fetch operation:", error);
         });
+    
+    const previewImage = document.getElementById("previewImage");
+    const imageInput = document.getElementById("imageInput"); // Assuming your file input has this ID
 
+    function previewImageFuc(event) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        previewImage.src = reader.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+
+    imageInput.addEventListener("change", previewImageFuc);
         
 
     function formatDate(date) {
@@ -92,6 +124,8 @@
     }
     
     function render(userData) {
+        document.getElementById("previewImage").src = `/files/${userData.memberImage}`;
+        document.getElementById("memberImage").src = `/files/${userData.memberImage}`;
         document.getElementById('memoName').innerText = userData.name;
         document.getElementById('memocreatedDate').innerText = 'joined ' + formatDate(new Date(userData.createdDate));
         document.getElementById('createdDate').value = formatDate(new Date(userData.createdDate));
@@ -104,16 +138,21 @@
     document.getElementById('profileForm').addEventListener('submit', function(event) {
 
         event.preventDefault();
+        const formData = new FormData();
+        formData.append('memberImage', imageInput.files[0]);
 
         const name = document.getElementById('name').value;
         const city = document.getElementById('city').value;
-        const password = document.getElementById('password').value; // Assuming you need to check current password
+        const password = document.getElementById('password').value;
+
+        formData.append("name", name);
+        formData.append("city", city);
+        formData.append("password", password);
+        formData.append("loginId", loginId);
+        console.log(...formData);
         fetch(`/api/members`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name, city, password })
+            body : formData
         })
         .then(response => {
             return response.json().then(data => {
@@ -121,7 +160,7 @@
                     alert("회원정보가 수정 되었습니다.");
                     window.location.reload();
                 } else if(response.status == 400) {
-                    alert("비밀번호가 일치하지 않습니다.");
+                    alert(data.message);
                 }
             });
         })

@@ -39,6 +39,12 @@ public class ExceptionAdvice {
         return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ImageTypeMisException.class)
+    public ResponseEntity memberBadImage(ImageTypeMisException e) {
+        ResponseCodeDto response = new ResponseCodeDto(HttpStatus.BAD_REQUEST.value(), IMAGE_TYPE_MIS.getMessage());
+        return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+    }
+
 
 
 

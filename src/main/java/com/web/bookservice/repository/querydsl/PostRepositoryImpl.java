@@ -41,6 +41,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                 .select(Projections.constructor(
                         PostDto.class,
                         post.id,
+                        member.memberImage.storeFileName,
                         member.name,
                         member.loginId,
                         post.createdDate,
@@ -69,6 +70,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                 .select(Projections.constructor(
                         ReviewCommentResponseDto.class,
                         comment.id,
+                        comment.member.memberImage.storeFileName,
                         comment.member.loginId,
                         comment.member.name,
                         comment.text,

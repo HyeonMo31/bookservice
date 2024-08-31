@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -42,16 +43,25 @@ public class LoginJoinController {
     public String join(@Validated  @ModelAttribute JoinDto joinDTO, BindingResult result
     , RedirectAttributes redirectAttributes) throws IOException {
 
+        log.info("joinDto = {}", joinDTO.getMemberImage());
         if(result.hasErrors()) {
             return "user/join";
         }
 
-        boolean state = memberService.join(joinDTO);
+        int state = memberService.join(joinDTO);
 
-        if(state) {
+        //created
+        if(state == 201) {
             redirectAttributes.addFlashAttribute("successMessage", "회원가입이 완료 되었습니다.");
-        } else {
-            result.rejectValue("loginId", "" ,"아이디가 이미 존재합니다.");
+        }
+        //conflict
+        else if(state == 409) {
+            result.rejectValue("loginId" , "", "아이디가 이미 존재합니다.");
+            return "user/join";
+        }
+        //bad request Image type error
+        else if (state == 400) {
+            result.rejectValue("memberImage", "", "gif, jpg, png 형식만 지원합니다.");
             return "user/join";
         }
 

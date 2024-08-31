@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +59,7 @@ public class BookController {
      * 리뷰 조회
      */
     @GetMapping("/api/books/{isbn}/reviews")
-    public List<ReviewCommentResponseDto> findAllReviews(@PathVariable("isbn")String isbn) {
+    public List<ReviewCommentResponseDto> findAllReviews(@PathVariable("isbn")String isbn) throws MalformedURLException {
         return reviewService.findReviewsByIsbn(isbn);
     }
 

@@ -17,6 +17,7 @@ import java.util.List;
 public class PostDto {
 
     private Long id;
+    private String memberImage;
     private String name;
     private String loginId;
     private String createdDate;
@@ -28,9 +29,11 @@ public class PostDto {
     private List<ReviewCommentResponseDto> commentsDto = new ArrayList<>();
 
 //    @QueryProjection
-    public PostDto(Long id, String name, String loginId, LocalDateTime createdDate, String postTitle, String text,
+    public PostDto(Long id, String memberImage, String name, String loginId,
+                   LocalDateTime createdDate, String postTitle, String text,
                    BookInfo bookInfo) {
         this.id = id;
+        this.memberImage = memberImage;
         this.name = name;
         this.loginId = loginId;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");

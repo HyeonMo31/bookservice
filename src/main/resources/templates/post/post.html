@@ -18,7 +18,7 @@
                 </div>
                 <div class="container">
                   <img
-                    id="image"
+                    id="bookImage"
                     style="width: 250px; height: 300px"
                     src="https://shopping-phinf.pstatic.net/main_3246655/32466555089.20221228071854.jpg"
                     title=""
@@ -131,6 +131,7 @@
                   <div class="media">
                     <div class="avatar">
                       <img
+                        id="memberImage"
                         src="https://bootdey.com/img/Content/avatar/avatar1.png"
                         title=""
                         alt=""
@@ -267,7 +268,7 @@
     }
 
     function displayBook(book) {
-      document.getElementById("image").src = book.image;
+      document.getElementById("bookImage").src = book.image;
       document.getElementById("bookTitle").textContent = book.bookTitle;
       document.getElementById("bookTitle").href = `/search/book/${book.isbn}`;
       document.getElementById("author").textContent = book.author;
@@ -276,6 +277,7 @@
     }
 
     function displayPost(data, member) {
+      document.getElementById("memberImage").src = `/files/${data.memberImage}`;
       document.getElementById("name").textContent = data.name;
       document.getElementById("loginId").textContent = data.loginId;
       document.getElementById("createdDate").textContent = data.createdDate;
@@ -305,7 +307,7 @@
                     <div style="display:flex" class="g-mb-15">
                        <img
                     class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15"
-                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                    src="/files/${comment.memberImage}"
                     alt="Image Description"
                   />
                   <div>

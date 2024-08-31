@@ -49,9 +49,12 @@ public class Member {
         this.memberImage = memberImage;
     }
 
-    public void updateMember(JoinDto joinDto) {
+    public void updateMember(JoinDto joinDto, UploadFile uploadFile) {
         this.name = joinDto.getName();
         this.city =joinDto.getCity();
+        if(uploadFile != null) {
+            this.memberImage = uploadFile;
+        }
     }
 
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)

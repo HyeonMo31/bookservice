@@ -29,10 +29,7 @@ public class MainController {
     }
 
     @GetMapping("/search/book/{isbn}")
-    public String searchBook() {
-        System.out.println("/search/book/${isbn}");
-        return "search/book";
-    }
+    public String searchBook() {return "search/book";}
     @GetMapping("/post")
     public String postListPage() {
         return "post/postList";
@@ -50,10 +47,7 @@ public class MainController {
     public String postUpdatePage() {return "post/editForm";}
 
     @GetMapping("/my-page")
-    public String myPage() {
-
-        return "user/my-page";
-    }
+    public String myPage() {return "user/my-page";}
 
     @GetMapping("/my-page/bookmarks")
     public String my_bookmarksPage() {

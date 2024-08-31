@@ -113,7 +113,7 @@
       .then((member) => {
         document.getElementById("name").value = member.name;
         document.getElementById("loginId").value = member.loginId;
-        member = data.loginId;
+        loginId = member.loginId;
       })
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);
@@ -139,7 +139,7 @@
         data.forEach((book) => {
           option = document.createElement("option");
           option.value = book.isbn;
-          option.textContent = book.title;
+          option.textContent = book.bookTitle;
           selectElement.appendChild(option);
         });
       })

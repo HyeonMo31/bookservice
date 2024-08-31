@@ -14,9 +14,9 @@
           </div>
           <div class="user-info">
             <div class="user-avatar">
-              <a class="edit-avatar" href="#"></a><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="User"></div>
+              <img id="memberImage" alt="User"></div>
             <div class="user-data">
-              <h4 >이름</h4><span >Joined February 06, 2017</span>
+              <h4 id="memoName">이름</h4><span id="memocreatedDate" >Joined February 06, 2017</span>
             </div>
           </div>
         </aside>
@@ -136,6 +136,7 @@
 <div th:replace="fragments/footer :: footer"></div>
 </body>
 <script>
+  
    const params = new URLSearchParams(window.location.search);
     let url = new URL(window.location.href);
     const query = params.get("query");
@@ -164,6 +165,28 @@
       }
       window.location.href = url.toString();
     });
+
+    function formatDate(date) {
+        const year = date.getFullYear();
+        let month = (1 + date.getMonth()).toString().padStart(2, '0');
+        let day = date.getDate().toString().padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    }
+
+    fetch(`/api/members`, {
+        method: "GET",
+        })
+        .then((response) => response.json())
+        .then((member) => {
+          document.getElementById("memberImage").src = `/files/${member.memberImage}`;
+          document.getElementById('memoName').innerText = member.name;
+          document.getElementById('memocreatedDate').innerText = 'joined ' + formatDate(new Date(member.createdDate));
+        })
+        .catch((error) => {
+            console.error("There was a problem with the fetch operation:", error);
+        });
+        
 
     function fetchBookmarkList(currentPage) {
       const page = currentPage ?? 1;

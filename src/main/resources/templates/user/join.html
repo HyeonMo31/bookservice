@@ -22,7 +22,7 @@
                   <img
                     id="previewImage"
                     style="height: 100px; width: 100px"
-                    src="/../img/head.png"
+                    src="/../img/tuna.jpg"
                     alt="유저 이미지 미리보기"
                   />
                 </div>
@@ -39,6 +39,7 @@
                   th:errorclass="field-error"
                   maxlength="15"
                 />
+                <div class="field-error" th:errors="*{memberImage}" />
               </div>
               <div class="col-12">
                 <label for="id" class="form-label">아이디</label>
@@ -116,7 +117,6 @@
     const memberImage = document.getElementById("memberImage"); // Assuming your file input has this ID
 
     function previewImageFuc(event) {
-      console.log("D");
       const reader = new FileReader();
       reader.onload = function () {
         previewImage.src = reader.result;
