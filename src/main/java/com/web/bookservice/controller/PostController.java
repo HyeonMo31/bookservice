@@ -1,5 +1,6 @@
 package com.web.bookservice.controller;
 
+import com.web.bookservice.domain.Post;
 import com.web.bookservice.dto.*;
 import com.web.bookservice.service.CommentService;
 import com.web.bookservice.service.PostService;
@@ -12,6 +13,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,9 +36,20 @@ public class PostController {
         return ResponseEntity.ok(assembler.toModel(postService.findAll(condition, pageable, member)));
     }
 
+    /**
+     * 게시글 Detail 조회
+     */
     @GetMapping("/api/post/{postId}")
     public ResponseEntity<PostDto> findPost(@PathVariable("postId")Long postId) {
         return ResponseEntity.ok(postService.findPostDetails(postId));
+    }
+
+    /**
+     * 최신글 3개 조회
+     */
+    @GetMapping("/api/post/latest")
+    public ResponseEntity<List<PostLatestDto>> findLatestPost() {
+        return ResponseEntity.ok(postService.findLatestPost());
     }
 
     /**

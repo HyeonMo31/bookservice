@@ -13,8 +13,8 @@ public class QPostPagingDto extends ConstructorExpression<PostPagingDto> {
 
     private static final long serialVersionUID = 1995578363L;
 
-    public QPostPagingDto(com.querydsl.core.types.Expression<Long> id, com.querydsl.core.types.Expression<String> postTitle, com.querydsl.core.types.Expression<String> bookTitle, com.querydsl.core.types.Expression<String> isbn, com.querydsl.core.types.Expression<String> writer, com.querydsl.core.types.Expression<java.time.LocalDateTime> createdDate) {
-        super(PostPagingDto.class, new Class<?>[]{long.class, String.class, String.class, String.class, String.class, java.time.LocalDateTime.class}, id, postTitle, bookTitle, isbn, writer, createdDate);
+    public QPostPagingDto(com.querydsl.core.types.Expression<Long> id, com.querydsl.core.types.Expression<String> postTitle, com.querydsl.core.types.Expression<String> bookTitle, com.querydsl.core.types.Expression<String> isbn, com.querydsl.core.types.Expression<String> writer, com.querydsl.core.types.Expression<java.time.LocalDateTime> createdDate, com.querydsl.core.types.Expression<Integer> commentCount) {
+        super(PostPagingDto.class, new Class<?>[]{long.class, String.class, String.class, String.class, String.class, java.time.LocalDateTime.class, int.class}, id, postTitle, bookTitle, isbn, writer, createdDate, commentCount);
     }
 
 }

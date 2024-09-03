@@ -35,93 +35,20 @@
               <!-- End Author -->
 
               <!-- Trending Post -->
-              <div class="widget widget-post">
+              <!-- <div class="widget widget-post">
                 <div class="widget-title">
                   <h3>Trending Now</h3>
                 </div>
                 <div class="widget-body"></div>
-              </div>
+              </div> -->
               <!-- End Trending Post -->
 
               <!-- Latest Post -->
               <div class="widget widget-latest-post">
                 <div class="widget-title">
-                  <h3>Latest Post</h3>
+                  <h3>최신 게시글</h3>
                 </div>
-                <div class="widget-body">
-                  <div class="latest-post-aside media">
-                    <div class="lpa-left media-body">
-                      <div class="lpa-title">
-                        <h5>
-                          <a href="#"
-                            >Prevent 75% of visitors from google analytics</a
-                          >
-                        </h5>
-                      </div>
-                      <div class="lpa-meta">
-                        <a class="name" href="#"> Rachel Roth </a>
-                        <a class="date" href="#"> 26 FEB 2020 </a>
-                      </div>
-                    </div>
-                    <div class="lpa-right">
-                      <a href="#">
-                        <img
-                          src="https://www.bootdey.com/image/400x200/FFB6C1/000000"
-                          title=""
-                          alt=""
-                        />
-                      </a>
-                    </div>
-                  </div>
-                  <div class="latest-post-aside media">
-                    <div class="lpa-left media-body">
-                      <div class="lpa-title">
-                        <h5>
-                          <a href="#"
-                            >Prevent 75% of visitors from google analytics</a
-                          >
-                        </h5>
-                      </div>
-                      <div class="lpa-meta">
-                        <a class="name" href="#"> Rachel Roth </a>
-                        <a class="date" href="#"> 26 FEB 2020 </a>
-                      </div>
-                    </div>
-                    <div class="lpa-right">
-                      <a href="#">
-                        <img
-                          src="https://www.bootdey.com/image/400x200/FFB6C1/000000"
-                          title=""
-                          alt=""
-                        />
-                      </a>
-                    </div>
-                  </div>
-                  <div class="latest-post-aside media">
-                    <div class="lpa-left media-body">
-                      <div class="lpa-title">
-                        <h5>
-                          <a href="#"
-                            >Prevent 75% of visitors from google analytics</a
-                          >
-                        </h5>
-                      </div>
-                      <div class="lpa-meta">
-                        <a class="name" href="#"> Rachel Roth </a>
-                        <a class="date" href="#"> 26 FEB 2020 </a>
-                      </div>
-                    </div>
-                    <div class="lpa-right">
-                      <a href="#">
-                        <img
-                          src="https://www.bootdey.com/image/400x200/FFB6C1/000000"
-                          title=""
-                          alt=""
-                        />
-                      </a>
-                    </div>
-                  </div>
-                </div>
+                <div id="postLatestContainer" class="widget-body"></div>
               </div>
               <!-- End Latest Post -->
             </div>
@@ -251,20 +178,57 @@
 
     async function render() {
       const postDataUrl = `/api/post/${postId}`;
+      const postLatestDataUrl = `/api/post/latest`;
       const loginMemberUrl = `/api/members`;
 
       try {
-        const [post, member] = await Promise.all([
+        const [post, postLatest, member] = await Promise.all([
           fetchData(postDataUrl),
+          fetchData(postLatestDataUrl),
           fetchData(loginMemberUrl),
         ]);
 
+        displayLatest(postLatest);
         displayBook(post.bookInfo);
         displayPost(post, member);
         displayComments(post.commentsDto, member);
       } catch (error) {
         console.error("데이터 렌더링 중 오류가 발생했습니다.", error);
       }
+    }
+
+    function displayLatest(postLatest) {
+      const container = document.getElementById("postLatestContainer");
+
+      postLatest.forEach((post) => {
+        const element = document.createElement("div");
+        element.className = "latest-post-aside media";
+
+        element.innerHTML = `<div class="lpa-left media-body">
+                      <div class="lpa-title">
+                        <h5>
+                          <a href="/post/${post.id}"
+                            >${post.postTitle}</a
+                          >
+                        </h5>
+                      </div>
+                      <div class="lpa-meta">
+                        <a class="name"> ${post.name} </a>
+                        <a class="date"> ${post.createdDate} </a>
+                      </div>
+                    </div>
+                    <div class="lpa-right">
+                      <a href="#">
+                        <img
+                          src="${post.bookImage}"
+                          title=""
+                          alt=""
+                        />
+                      </a>
+                    </div>`;
+
+        container.appendChild(element);
+      });
     }
 
     function displayBook(book) {

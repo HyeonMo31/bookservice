@@ -41,6 +41,7 @@ import static com.web.bookservice.exception.ErrorMessage.*;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final MemberDetailsService memberDetailsService;
     private final FileStore fileStore;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -112,7 +113,9 @@ public class MemberService {
             }
         }
 
-
+        //스프링 시큐리티의 세션 값을 변경.
+        memberDetailsService.updateSecurityContext(findMember.getLoginId());
+        
         findMember.updateMember(joinDto, uploadFile);
 
         return new MemberResponseDto(findMember);

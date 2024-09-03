@@ -290,7 +290,7 @@
                       <th scope="row" class="ps-4">
                         <div >${post.id}</div>
                       </th>
-                       <td> <a href="/post/${post.id}" th:class="text-body">${postTitle}</a> <span >(1)</span></td>
+                       <td> <a href="/post/${post.id}" th:class="text-body">${postTitle}</a> <span> (${post.commentCount})</span></td>
                         <td><a href="/search/book/${post.isbn}">
                              <span class="badge badge-soft-success mb-0">${bookTitle}</span></a></td>
                          <td><span>${post.writer}</span></td>

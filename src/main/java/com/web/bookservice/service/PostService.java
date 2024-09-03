@@ -10,12 +10,13 @@ import com.web.bookservice.repository.BookRepository;
 import com.web.bookservice.repository.MemberRepository;
 import com.web.bookservice.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -94,4 +95,7 @@ public class PostService {
     }
 
 
+    public List<PostLatestDto> findLatestPost() {
+        return postRepository.findTop3ByCreatedDate(Limit.of(3));
+    }
 }

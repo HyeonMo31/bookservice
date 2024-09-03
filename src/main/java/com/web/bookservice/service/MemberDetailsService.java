@@ -5,6 +5,8 @@ import com.web.bookservice.dto.CustomMemberDetails;
 import com.web.bookservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,5 +31,17 @@ public class MemberDetailsService implements UserDetailsService {
         }
 
         return new CustomMemberDetails(member);
+    }
+
+    public void updateSecurityContext(String loginId) {
+        // 변경된 사용자의 UserDetails를 로드
+        UserDetails userDetails = loadUserByUsername(loginId);
+
+        // 새로운 Authentication 객체 생성
+        UsernamePasswordAuthenticationToken newAuth =
+                new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+
+        // SecurityContextHolder의 Authentication을 새로운 것으로 교체
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
     }
 }

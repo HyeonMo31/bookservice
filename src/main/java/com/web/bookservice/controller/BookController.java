@@ -30,9 +30,6 @@ public class BookController {
                                       @RequestParam(defaultValue = "sim", name = "orderBy")String orderBy) {
 
         NaverBookResponseDto response = naverBookService.searchBooks(query, pageNum, orderBy);
-        System.out.println("query = " + query);
-        System.out.println("pageNum = " + pageNum);
-        System.out.println("orderBy = " + orderBy);
         return ResponseEntity.ok(response);
 
     }

@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 public class BookMarkController {
 
     private final BookMarkService bookMarkService;
-    private final MemberRepository memberRepository;
-
     /**
      * 즐겨찾기 멤버 리스트 조회
      */
