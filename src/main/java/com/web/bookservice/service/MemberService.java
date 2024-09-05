@@ -115,7 +115,7 @@ public class MemberService {
 
         //스프링 시큐리티의 세션 값을 변경.
         memberDetailsService.updateSecurityContext(findMember.getLoginId());
-        
+
         findMember.updateMember(joinDto, uploadFile);
 
         return new MemberResponseDto(findMember);

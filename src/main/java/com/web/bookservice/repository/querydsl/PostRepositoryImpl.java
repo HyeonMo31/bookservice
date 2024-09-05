@@ -116,6 +116,13 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         else if (orderBy.equals("asc")) {
             return post.createdDate.asc();
         }
+        else if (orderBy.equals("commentDesc")) {
+            return post.comments.size().desc();
+        }
+        else if (orderBy.equals("commentAsc")) {
+            return post.comments.size().asc();
+        }
+
 
         return post.createdDate.desc();
     }
