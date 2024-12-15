@@ -6,12 +6,16 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.web.bookservice.dto.*;
+import com.web.bookservice.repository.CommentRepository;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.web.bookservice.domain.QBook.book;
 import static com.web.bookservice.domain.QComment.comment;
@@ -29,8 +33,30 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
     @Override
     public PostDto findPostDetails(Long id) {
 
+        //댓글 대댓글을 한번에 조회한다.
+        List<ReviewCommentResponseDto> comments = findPostComments(id);
+
         PostDto postDto = findPostAndBook(id);
-        postDto.setCommentsDto(findPostComments(id));
+
+        List<ReviewCommentResponseDto> commentReply = new ArrayList<>();
+
+        //부모 댓글에 대해 자식 댓글을 삽입한다.
+        Map<Long, ReviewCommentResponseDto> m = new HashMap<>();
+        for (ReviewCommentResponseDto comment : comments) {
+
+            //부모 요소이면 m에 삽입.
+            if(comment.getParentId() == null) {
+                m.put(comment.getId(), comment);
+                //자식 요소이면 부모 아래 삽입.
+            } else {
+               m.get(comment.getParentId()).getChildren().add(comment);
+            }
+        }
+
+        //map의 요소들을 list로 반환
+        List<ReviewCommentResponseDto> keysList = new ArrayList<>(m.values());
+
+        postDto.setCommentsDto(keysList);
 
         return postDto;
     }
@@ -74,10 +100,12 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         comment.member.loginId,
                         comment.member.name,
                         comment.text,
-                        comment.createdDate))
+                        comment.createdDate,
+                        comment.parent.id))
                 .from(post)
                 .leftJoin(post.comments, comment)
                 .where(post.id.eq(id))
+                .orderBy(comment.id.asc().nullsFirst())
                 .fetchResults();
         return results.getResults();
     }

@@ -9,6 +9,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -34,9 +36,17 @@ public class Comment {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    public Comment(Post post, Member member, String text) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    private List<Comment> children = new ArrayList<>();
+
+    public Comment(Post post, Member member, String text, Comment parent) {
         this.post = post;
         this.member = member;
         this.text = text;
+        this.parent = parent;
     }
 }

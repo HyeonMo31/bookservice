@@ -10,6 +10,8 @@ import org.springframework.core.io.UrlResource;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Setter
 public class ReviewCommentResponseDto {
@@ -20,9 +22,12 @@ public class ReviewCommentResponseDto {
     private String name;
     private String text;
     private String createdDate;
+    private Long parentId;
+    private List<ReviewCommentResponseDto> children = new ArrayList<>();
 
     @QueryProjection
-    public ReviewCommentResponseDto(Long id, String memberImage, String loginId, String name, String text, LocalDateTime createdDate) {
+    public ReviewCommentResponseDto(Long id, String memberImage, String loginId, String name,
+                                    String text, LocalDateTime createdDate, Long parentId) {
         this.id = id;
         this.memberImage = memberImage;
         this.loginId = loginId;
@@ -30,6 +35,9 @@ public class ReviewCommentResponseDto {
         this.text = text;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         this.createdDate = createdDate.format(formatter);
+        this.parentId = parentId;
+
+
     }
 
 

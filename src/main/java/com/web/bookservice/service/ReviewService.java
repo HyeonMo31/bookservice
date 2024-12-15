@@ -49,7 +49,8 @@ public class ReviewService {
 
         Review savedReview = reviewRepository.save(review);
 
-        return new ReviewCommentResponseDto(savedReview.getId(), findMember.getMemberImage().getStoreFileName(), findMember.getLoginId(), findMember.getName(), request.getText(), savedReview.getCreatedDate());
+        return new ReviewCommentResponseDto(savedReview.getId(), findMember.getMemberImage().getStoreFileName(),
+                findMember.getLoginId(), findMember.getName(), request.getText(), savedReview.getCreatedDate(), null);
 
     }
 
@@ -86,7 +87,7 @@ public class ReviewService {
                             review.getMember().getLoginId(),
                             review.getMember().getName(),
                             review.getText(),
-                            review.getCreatedDate());
+                            review.getCreatedDate(), null);
             reviewCommentResponseDtoList.add(reviewCommentResponseDto);
         }
         return reviewCommentResponseDtoList;

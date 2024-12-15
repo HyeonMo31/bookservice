@@ -27,6 +27,12 @@ public class ExceptionAdvice {
         return new ResponseEntity(response, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity commentNotFound(CommentNotFoundException e) {
+        ResponseCodeDto response = new ResponseCodeDto(HttpStatus.NOT_FOUND.value(), COMMENT_NOT_FOUND.getMessage());
+        return new ResponseEntity(response, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(MemberNotAuthenticatedException.class)
     public ResponseEntity memberNotAuth(MemberNotAuthenticatedException e) {
         ResponseCodeDto response = new ResponseCodeDto(HttpStatus.UNAUTHORIZED.value(),  e.getMessage());

@@ -95,7 +95,7 @@ public class PostController {
                                                       @RequestBody ReviewCommentRequestDto request,
                                                       @AuthenticationPrincipal CustomMemberDetails member) {
 
-        return ResponseEntity.ok(commentService.addComment(postId, request.getText(), member));
+        return ResponseEntity.ok(commentService.addComment(postId, request, member));
 
     }
 
