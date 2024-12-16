@@ -297,6 +297,7 @@
                       class="text-break"
                     >${comment.text}
                     </p>
+                    <div class = "d-flex justify-content-between">
                      <ul class="list-inline d-sm-flex my-0">
                       <li class="list-inline-item g-mr-20">
                         <a
@@ -321,30 +322,137 @@
                         </a>
                       </li>
                       <li class="list-inline-item ml-auto">
-                        <a
-                          class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover"
-                          href="#!"
+                        <button
+                        id="replyBtn-${comment.id}"
+                          type=""
+                          class="btn btn-primary btn-sm mx-2 replyBtn"
                         >
-                          <i class="fa fa-reply g-pos-rel g-top-1 g-mr-3"></i>
-                          Reply
-                        </a>
-                      </li>
-                      <div>
+                          대댓글 작성
+                        </button>
+                      </li>     
+                    </ul>
+                    <div>
                         <button
                         id="deleteComment-${comment.id}"
                           type="submit"
-                          class="btn btn-primary btn-sm mx-2"
+                          class="btn btn-primary btn-sm mx-2 deleteBtn"
                         >
                           삭제
                         </button>
                       </div>
-                    </ul>`;
-        container.appendChild(commentDiv);
+                    </div>
+                    <form id=replyForm-${comment.id} action="" method="post"  style= "display:none;">
+                    <div  class="form-group">
+                      <label>Your Comment</label>
+                      <textarea
+                        maxlength="255"
+                        id="replyComment-${comment.id}"
+                        name="comment"
+                        class="form-control"
+                        placeholder="댓글을 작성하십시오."
+                        style="resize: none"
+                        rows="3"
+                      ></textarea>
+                    </div>
+                    <div class="form-group mt-3">
+                      <button
+                        id="addComment"
+                        class="btn btn-primary btn-sm addBtn"
+                        type="submit"
+                      >
+                        작성
+                      </button>
+                    </div>
+                </form>`;
 
-        const deleteButton = commentDiv.querySelector(".btn");
+        container.appendChild(commentDiv);
+        const deleteButton = commentDiv.querySelector(".deleteBtn");
         if (comment.loginId !== member.loginId) {
           deleteButton.classList.add("hidden");
         }
+
+        //자식 댓글 만들기;
+        comment.children.forEach((child) => {
+          const childDiv = document.createElement("div");
+          childDiv.id = child.id;
+          childDiv.className = "row d-flex media g-mb-30 media-comment";
+          childDiv.innerHTML = `
+          <div class = "col-2"></div>
+          <div  class="col-10 media-body u-shadow-v18 g-bg-secondary g-pa-30">
+                    <div style="display:flex" class="g-mb-15">
+                       <img
+                    class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15"
+                    src="/files/${child.memberImage}"
+                    alt="Image Description"
+                  />
+                  <div>
+                      <h5
+                        id="commentName"
+                        text=""
+                        class="fw-bold h5 g-color-gray-dark-v1 mb-0"
+                      >
+                    ${child.name}
+                      </h5>
+                      <span
+                        id="commentCreatedDate"
+                        class="g-color-gray-dark-v4 g-font-size-12"
+                        >
+                    ${child.createdDate}</span
+                      >
+                      </div>
+                    </div>
+
+                    <p
+                      id="commentText"
+                      style="white-space: pre-wrap"
+                      class="text-break"
+                    >${child.text}
+                    </p>
+                    <div class = "d-flex justify-content-between">
+                     <ul class="list-inline d-sm-flex my-0">
+                      <li class="list-inline-item g-mr-20">
+                        <a
+                          class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover"
+                          href="#!"
+                        >
+                          <i
+                            class="fa fa-thumbs-up g-pos-rel g-top-1 g-mr-3"
+                          ></i>
+                          178
+                        </a>
+                      </li>
+                      <li class="list-inline-item g-mr-20">
+                        <a
+                          class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover"
+                          href="#!"
+                        >
+                          <i
+                            class="fa fa-thumbs-down g-pos-rel g-top-1 g-mr-3"
+                          ></i>
+                          34
+                        </a>
+                      </li>                  
+                    </ul>
+                    <div>
+                        <button
+                        id="deleteComment-${child.id}"
+                          type="submit"
+                          class="btn btn-primary btn-sm mx-2 deleteBtn"
+                        >
+                          삭제
+                        </button>
+                      </div>
+                    </div>
+                    `;
+
+          container.appendChild(childDiv);
+          const deleteButton = document.getElementById(
+            `deleteComment-${child.id}`
+          );
+          if (child.loginId !== member.loginId) {
+            deleteButton.classList.add("hidden");
+          }
+        });
       });
     }
 
@@ -376,7 +484,7 @@
       fetch(`/api/post/${postId}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ parentId: null, text }),
       })
         .then((response) => {
           return response.json().then((data) => {
@@ -396,10 +504,10 @@
     document
       .getElementById("commentContainer")
       .addEventListener("click", function (event) {
-        if (event.target.classList.contains("btn")) {
-          const commentDiv = event.target.closest(".media");
-          const commentId = commentDiv.id;
+        const commentDiv = event.target.closest(".media");
+        const commentId = commentDiv.id;
 
+        if (event.target.classList.contains("deleteBtn")) {
           if (confirm("정말로 이 리뷰를 삭제하시겠습니까?")) {
             fetch(`/api/post/${postId}/comments/${commentId}`, {
               method: "DELETE",
@@ -418,6 +526,37 @@
               })
               .catch((error) => alert(error.message));
           }
+        } else if (event.target.classList.contains("replyBtn")) {
+          const replyInput = document.getElementById(`replyForm-${commentId}`);
+
+          if (replyInput.style.display === "none") {
+            replyInput.style.display = "block";
+          } else {
+            replyInput.style.display = "none";
+          }
+        } else if (event.target.classList.contains("addBtn")) {
+          const text = document
+            .getElementById(`replyComment-${commentId}`)
+            .value.trim();
+          console.log(text);
+          fetch(`/api/post/${postId}/comments`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ parentId: commentId, text: text }),
+          })
+            .then((response) => {
+              return response.json().then((data) => {
+                if (response.ok) {
+                  window.location.reload();
+                } else if (response.status == 401) {
+                  window.location.href = "/login";
+                } else if (response.status == 404) {
+                  window.location.reload();
+                }
+                alert(data.message);
+              });
+            })
+            .catch((error) => alert(error.message));
         }
       });
 
