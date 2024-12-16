@@ -12,10 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.web.bookservice.domain.QBook.book;
 import static com.web.bookservice.domain.QComment.comment;
@@ -38,12 +35,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
 
         PostDto postDto = findPostAndBook(id);
 
-        List<ReviewCommentResponseDto> commentReply = new ArrayList<>();
-
         //부모 댓글에 대해 자식 댓글을 삽입한다.
-        Map<Long, ReviewCommentResponseDto> m = new HashMap<>();
+        TreeMap<Long, ReviewCommentResponseDto> m = new TreeMap<>();
         for (ReviewCommentResponseDto comment : comments) {
-
             //부모 요소이면 m에 삽입.
             if(comment.getParentId() == null) {
                 m.put(comment.getId(), comment);
@@ -52,10 +46,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                m.get(comment.getParentId()).getChildren().add(comment);
             }
         }
-
+        
         //map의 요소들을 list로 반환
         List<ReviewCommentResponseDto> keysList = new ArrayList<>(m.values());
-
         postDto.setCommentsDto(keysList);
 
         return postDto;
