@@ -19,6 +19,7 @@ spring: #띄어쓰기 없음
         format_sql: true #띄어쓰기 8칸
   devtools:
     restart:
+      enabled : false
       exclude: static/** #유저 이미지가 추가 될때마다 새로운 파일 추가로 restart 방지
   servlet:
     multipart:

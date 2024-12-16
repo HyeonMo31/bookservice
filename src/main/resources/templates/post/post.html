@@ -102,7 +102,7 @@
                 class="bg-white rounded shadow-sm p-4 mb-5 rating-review-select-page"
               >
                 <h5 class="mb-4">댓글 작성</h5>
-                <form action="" method="post">
+                <form>
                   <div class="form-group">
                     <label>Your Comment</label>
                     <textarea
@@ -341,7 +341,7 @@
                         </button>
                       </div>
                     </div>
-                    <form id=replyForm-${comment.id} action="" method="post"  style= "display:none;">
+                    <form id=replyForm-${comment.id} style= "display:none;">
                     <div  class="form-group">
                       <label>Your Comment</label>
                       <textarea
@@ -480,6 +480,7 @@
     });
 
     document.getElementById("addComment").addEventListener("click", () => {
+      event.preventDefault();
       const text = document.getElementById("comment").value.trim();
       fetch(`/api/post/${postId}/comments`, {
         method: "POST",
@@ -535,6 +536,7 @@
             replyInput.style.display = "none";
           }
         } else if (event.target.classList.contains("addBtn")) {
+          event.preventDefault();
           const text = document
             .getElementById(`replyComment-${commentId}`)
             .value.trim();
