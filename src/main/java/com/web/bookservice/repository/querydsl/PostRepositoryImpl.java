@@ -115,7 +115,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         book.isbn,
                         member.name,
                         post.createdDate,
-                        post.comments.size()))
+                        post.comments.size(),
+                        post.viewCount))
                 .from(post)
                 .leftJoin(post.book, book)
                 .leftJoin(post.member, member)

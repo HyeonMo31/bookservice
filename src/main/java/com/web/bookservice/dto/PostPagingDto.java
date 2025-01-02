@@ -17,10 +17,11 @@ public class PostPagingDto {
     private String writer;
     private String createdDate;
     private int commentCount;
+    private int viewCount;
 
     @QueryProjection
     public PostPagingDto(Long id, String postTitle, String bookTitle, String isbn,
-                         String writer, LocalDateTime createdDate, int commentCount) {
+                         String writer, LocalDateTime createdDate, int commentCount, int viewCount) {
         this.id = id;
         this.postTitle = postTitle;
         this.bookTitle = bookTitle;
@@ -29,5 +30,6 @@ public class PostPagingDto {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         this.createdDate = createdDate.format(formatter);
         this.commentCount = commentCount;
+        this.viewCount = viewCount;
     }
 }

@@ -4,12 +4,17 @@ import com.web.bookservice.domain.Post;
 import com.web.bookservice.dto.*;
 import com.web.bookservice.service.CommentService;
 import com.web.bookservice.service.PostService;
+import com.web.bookservice.utils.CookieUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +28,7 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final CookieUtil cookieUtil;
 
     /**
      * 조건에 따른 게시글 Paging 조회 (PagedResourcesAssembler를 통해 직관적인 JSON 반환)
@@ -40,8 +46,11 @@ public class PostController {
      * 게시글 Detail 조회
      */
     @GetMapping("/api/post/{postId}")
-    public ResponseEntity<PostDto> findPost(@PathVariable("postId")Long postId) {
-        return ResponseEntity.ok(postService.findPostDetails(postId));
+    public ResponseEntity<PostDto> findPost(@PathVariable("postId")Long postId,
+                                            HttpServletRequest request,
+                                            HttpServletResponse response) {
+        String cookieValue = cookieUtil.getCookieValue(request, response, "view_id");
+        return ResponseEntity.ok(postService.findPostDetails(postId, cookieValue));
     }
 
     /**

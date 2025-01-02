@@ -13,9 +13,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -26,16 +28,18 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final BookRepository bookRepository;
+    private final RedisService redisService;
     
-    public PostDto findPostDetails(Long id) {
+    public PostDto findPostDetails(Long id, String cookieValue) {
         Optional<Post> findPost = postRepository.findById(id);
 
         findPost.orElseThrow(() -> new PostNotFoundException());
 
+        redisService.increaseViewCount(id, cookieValue);
+
         return postRepository.findPostDetails(id);
 
     }
-
 
     public Page<PostPagingDto> findAll(SearchCondition condition, Pageable pageable, CustomMemberDetails member)
     {

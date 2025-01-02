@@ -40,6 +40,8 @@ public class Post {
     @CreatedDate
     private LocalDateTime createdDate;
 
+    private int viewCount;
+
     public Post(Member member, Book book, String title, String text) {
         this.member = member;
         this.book = book;
